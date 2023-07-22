@@ -9,14 +9,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.explore_with_me.category.controller.CategoryAdminController;
 import ru.practicum.explore_with_me.category.controller.CategoryPublicController;
-import ru.practicum.explore_with_me.comipation.controller.CompilationAdminController;
-import ru.practicum.explore_with_me.comipation.controller.CompilationPublicController;
+import ru.practicum.explore_with_me.compilation.controller.CompilationAdminController;
+import ru.practicum.explore_with_me.compilation.controller.CompilationPublicController;
 import ru.practicum.explore_with_me.event.controller.EventAdminController;
 import ru.practicum.explore_with_me.event.controller.EventPrivateController;
 import ru.practicum.explore_with_me.event.controller.EventPublicController;
 import ru.practicum.explore_with_me.request.controller.RequestPrivateController;
 import ru.practicum.explore_with_me.user.controller.UserAdminController;
-import ru.practicum.explore_with_me.user.exception.UserNotFoundException;
 
 @RestControllerAdvice(assignableTypes = {
         CategoryPublicController.class,
@@ -34,8 +33,16 @@ public class ErrorHandler {
     //Users
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handlerUserNotFoundException(final UserNotFoundException e) {
+    public ErrorResponse handlerNotFoundEwmException(final NotFoundEwmException e) {
         log.error("Received status 404 Not Found {}", e.getMessage(), e);
+        return new ErrorResponse(e.getMessage());
+    }
+
+    //Categories
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handlerAlreadyExistEwmException(final AlreadyExistEwmException e) {
+        log.error("Received status 409 Conflict {}", e.getMessage(), e);
         return new ErrorResponse(e.getMessage());
     }
 

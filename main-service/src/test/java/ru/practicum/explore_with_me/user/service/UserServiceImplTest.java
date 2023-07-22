@@ -9,8 +9,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import ru.practicum.explore_with_me.error.AlreadyExistEwmException;
+import ru.practicum.explore_with_me.error.NotFoundEwmException;
+import ru.practicum.explore_with_me.user.dto.UserRequestDto;
 import ru.practicum.explore_with_me.user.dto.UserResponseDto;
-import ru.practicum.explore_with_me.user.exception.UserNotFoundException;
 import ru.practicum.explore_with_me.user.model.User;
 import ru.practicum.explore_with_me.user.repository.UserRepository;
 
@@ -58,13 +60,39 @@ class UserServiceImplTest {
     }
 
     @Test
+    @DisplayName("Test creating user with existing name")
+    void createUserWithExistingName() {
+        // Создание нового DTO с именем, которое уже существует в репозитории
+        UserRequestDto userRequestDto = new UserRequestDto("userTest@mail.ru", "userTest");
+
+        // Настройка репозитория для возвращения существующего пользователя при вызове findByName()
+        when(userRepository.findByName(userRequestDto.getName())).thenReturn(Optional.of(user1));
+
+        // Проверка, что AlreadyExistEwmException выбрасывается при попытке создать пользователя с уже существующим именем
+        Exception exception = assertThrows(
+                AlreadyExistEwmException.class,
+                () -> userService.createUser(userRequestDto)
+        );
+
+        // Проверка, что сообщение исключения содержит ожидаемое сообщение
+        String expectedMessage = String.format("A user named %s already exists", userRequestDto.getName());
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+
+        // Проверка, что метод findByName() был вызван один раз
+        verify(userRepository, times(1)).findByName(userRequestDto.getName());
+    }
+
+
+    @Test
     @DisplayName("Test deleting a non-existent user")
     void deleteUserNotFound() {
         Long userId = 3L;  // This ID doesn't correspond to any user
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(
-                UserNotFoundException.class, () -> userService.deleteUser(userId));
+                NotFoundEwmException.class, () -> userService.deleteUser(userId));
 
         String expectedMessage = String.format("user with id = %d not found", userId);
         String actualMessage = exception.getMessage();

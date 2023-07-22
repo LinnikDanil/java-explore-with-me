@@ -9,6 +9,7 @@ import ru.practicum.explore_with_me.user.dto.UserRequestDto;
 import ru.practicum.explore_with_me.user.dto.UserResponseDto;
 import ru.practicum.explore_with_me.user.service.UserService;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
@@ -32,7 +33,7 @@ public class UserAdminController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserResponseDto createUser(@RequestBody UserRequestDto userRequestDto) {
+    public UserResponseDto createUser(@Valid @RequestBody UserRequestDto userRequestDto) {
         log.info("CONTROLLER: POST user {}", userRequestDto);
         return userService.createUser(userRequestDto);
     }

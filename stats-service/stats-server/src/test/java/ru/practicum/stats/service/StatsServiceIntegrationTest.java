@@ -24,7 +24,7 @@ class StatsServiceIntegrationTest {
     private final StatsService statsService;
 
     @Test
-    @DisplayName("Полный интеграционный тест сервиса")
+    @DisplayName("Full integration test of the statistics service and repository")
     void hitAndGetStats() {
         //test hitDto
         HitDto hitDtoTest1 = HitDto.builder().app("appHit1").uri("uriHit1").ip("1Hit").timestamp(LocalDateTime.now().format(TimeFormatUtil.TIMESTAMP_FORMATTER)).build();

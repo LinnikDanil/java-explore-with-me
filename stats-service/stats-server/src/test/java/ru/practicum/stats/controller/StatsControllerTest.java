@@ -34,11 +34,11 @@ class StatsControllerTest {
             .timestamp(LocalDateTime.now().format(TimeFormatUtil.TIMESTAMP_FORMATTER)).build();
     private final StatsDto statsDto = new StatsDto("app", "uri", 5L);
     @MockBean
-    StatsService statsService;
+    private StatsService statsService;
     @Autowired
-    MockMvc mvc;
+    private MockMvc mvc;
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     @Test
     @DisplayName("Запись статистики")

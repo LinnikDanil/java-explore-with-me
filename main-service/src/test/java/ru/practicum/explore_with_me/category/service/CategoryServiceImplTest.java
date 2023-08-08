@@ -10,8 +10,9 @@ import ru.practicum.explore_with_me.category.dto.CategoryRequestDto;
 import ru.practicum.explore_with_me.category.dto.CategoryResponseDto;
 import ru.practicum.explore_with_me.category.model.Category;
 import ru.practicum.explore_with_me.category.repository.CategoryRepository;
-import ru.practicum.explore_with_me.error.AlreadyExistEwmException;
-import ru.practicum.explore_with_me.error.NotFoundEwmException;
+import ru.practicum.explore_with_me.error.exception.AlreadyExistEwmException;
+import ru.practicum.explore_with_me.error.exception.NotFoundEwmException;
+import ru.practicum.explore_with_me.event.repository.EventRepository;
 
 import java.util.Optional;
 
@@ -32,10 +33,12 @@ class CategoryServiceImplTest {
     private CategoryService categoryService;
     @Mock
     private CategoryRepository categoryRepository;
+    @Mock
+    private EventRepository eventRepository;
 
     @BeforeEach
     public void setUp() {
-        categoryService = new CategoryServiceImpl(categoryRepository);
+        categoryService = new CategoryServiceImpl(categoryRepository, eventRepository);
     }
 
     @Test

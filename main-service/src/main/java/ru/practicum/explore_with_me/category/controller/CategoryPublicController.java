@@ -24,14 +24,14 @@ public class CategoryPublicController {
     @ResponseStatus(HttpStatus.OK)
     public List<CategoryResponseDto> getCategories(@PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
                                                    @Positive @RequestParam(defaultValue = "10") Integer size) {
-        log.info("CONTROLLER: GET categories from = {}, size = {}", from, size);
+        log.info("PUBLIC CONTROLLER: GET categories from = {}, size = {}", from, size);
         return categoryService.getCategories(from, size);
     }
 
     @GetMapping("{catId}")
     @ResponseStatus(HttpStatus.OK)
     public CategoryResponseDto getCategoryById(@PathVariable Long catId) {
-        log.info("CONTROLLER: GET category id = {}", catId);
+        log.info("PUBLIC CONTROLLER: GET category id = {}", catId);
         return categoryService.getCategoryById(catId);
     }
 }

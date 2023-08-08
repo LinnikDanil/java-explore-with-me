@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.stats.utils.TimeFormatUtil;
+import ru.practicum.stats.utils.TimeFormatConstants;
 import ru.practicum.stats_dto.HitDto;
 import ru.practicum.stats_dto.StatsDto;
 
@@ -27,10 +27,10 @@ class StatsServiceIntegrationTest {
     @DisplayName("Full integration test of the statistics service and repository")
     void hitAndGetStats() {
         //test hitDto
-        HitDto hitDtoTest1 = HitDto.builder().app("appHit1").uri("uriHit1").ip("1Hit").timestamp(LocalDateTime.now().format(TimeFormatUtil.TIMESTAMP_FORMATTER)).build();
-        HitDto hitDtoTest2 = HitDto.builder().app("appHit2").uri("uriHit2").ip("1Hit").timestamp(LocalDateTime.now().format(TimeFormatUtil.TIMESTAMP_FORMATTER)).build();
-        HitDto hitDtoTest3 = HitDto.builder().app("appHit3").uri("uriHit1").ip("2Hit").timestamp(LocalDateTime.now().format(TimeFormatUtil.TIMESTAMP_FORMATTER)).build();
-        HitDto hitDtoTest4 = HitDto.builder().app("appHit1").uri("uriHit1").ip("1Hit").timestamp(LocalDateTime.now().format(TimeFormatUtil.TIMESTAMP_FORMATTER)).build();
+        HitDto hitDtoTest1 = HitDto.builder().app("appHit1").uri("uriHit1").ip("1Hit").timestamp(LocalDateTime.now().format(TimeFormatConstants.TIMESTAMP_FORMATTER)).build();
+        HitDto hitDtoTest2 = HitDto.builder().app("appHit2").uri("uriHit2").ip("1Hit").timestamp(LocalDateTime.now().format(TimeFormatConstants.TIMESTAMP_FORMATTER)).build();
+        HitDto hitDtoTest3 = HitDto.builder().app("appHit3").uri("uriHit1").ip("2Hit").timestamp(LocalDateTime.now().format(TimeFormatConstants.TIMESTAMP_FORMATTER)).build();
+        HitDto hitDtoTest4 = HitDto.builder().app("appHit1").uri("uriHit1").ip("1Hit").timestamp(LocalDateTime.now().format(TimeFormatConstants.TIMESTAMP_FORMATTER)).build();
 
         HitDto hitDto1 = statsService.hit(hitDtoTest1);
         HitDto hitDto2 = statsService.hit(hitDtoTest2);

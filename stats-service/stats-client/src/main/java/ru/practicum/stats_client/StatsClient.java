@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
-import ru.practicum.stats.utils.TimeFormatUtil;
+import ru.practicum.stats.utils.TimeFormatConstants;
 import ru.practicum.stats_dto.HitDto;
 
 import java.time.LocalDateTime;
@@ -31,6 +31,7 @@ public class StatsClient extends BaseClient {
     }
 
     public ResponseEntity<Object> hit(HitDto hitDto) {
+        log.info("Stats Client send request HIT: {}", hitDto);
         return post(hitDto);
     }
 
@@ -45,11 +46,11 @@ public class StatsClient extends BaseClient {
             throw new IllegalArgumentException("Start time can't be later than the end time.");
         }
 
-        log.info("Stats Client send request: start: {}, end: {}, uris: {}, unique: {}", start, end, uris, unique);
+        log.info("Stats Client send request GET STATS: start: {}, end: {}, uris: {}, unique: {}", start, end, uris, unique);
 
         Map<String, Object> parameters = Map.of(
-                "start", start.format(TimeFormatUtil.TIMESTAMP_FORMATTER),
-                "end", end.format(TimeFormatUtil.TIMESTAMP_FORMATTER)
+                "start", start.format(TimeFormatConstants.TIMESTAMP_FORMATTER),
+                "end", end.format(TimeFormatConstants.TIMESTAMP_FORMATTER)
         );
 
         StringBuilder path = new StringBuilder("/stats?start={start}&end={end}");

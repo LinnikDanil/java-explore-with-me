@@ -11,7 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.stats.exception.ValidationRequestException;
 import ru.practicum.stats.service.StatsService;
-import ru.practicum.stats.utils.TimeFormatUtil;
+import ru.practicum.stats.utils.TimeFormatConstants;
 import ru.practicum.stats_dto.HitDto;
 import ru.practicum.stats_dto.StatsDto;
 
@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = StatsController.class)
 class StatsControllerTest {
     private final HitDto hitDtoTest = HitDto.builder().app("appHit").uri("uriHit").ip("Hit")
-            .timestamp(LocalDateTime.now().format(TimeFormatUtil.TIMESTAMP_FORMATTER)).build();
+            .timestamp(LocalDateTime.now().format(TimeFormatConstants.TIMESTAMP_FORMATTER)).build();
     private final StatsDto statsDto = new StatsDto("app", "uri", 5L);
     @MockBean
     private StatsService statsService;
@@ -50,7 +50,7 @@ class StatsControllerTest {
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                ).andExpect(status().isOk())
+                ).andExpect(status().isCreated())
                 .andExpect(jsonPath("$.app", is(hitDtoTest.getApp())))
                 .andExpect(jsonPath("$.uri", is(hitDtoTest.getUri())))
                 .andExpect(jsonPath("$.ip", is(hitDtoTest.getIp())));

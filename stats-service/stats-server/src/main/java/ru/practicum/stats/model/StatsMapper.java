@@ -5,7 +5,7 @@ import ru.practicum.stats_dto.HitDto;
 
 import java.time.LocalDateTime;
 
-import static ru.practicum.stats.utils.TimeFormatUtil.TIMESTAMP_FORMATTER;
+import static ru.practicum.stats.utils.TimeFormatConstants.TIMESTAMP_FORMATTER;
 
 @UtilityClass
 public class StatsMapper {

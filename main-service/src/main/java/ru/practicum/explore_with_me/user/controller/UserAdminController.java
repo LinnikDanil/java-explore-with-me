@@ -27,21 +27,21 @@ public class UserAdminController {
     public List<UserResponseDto> getUsers(@RequestParam(required = false) List<Long> ids,
                                           @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
                                           @RequestParam(defaultValue = "10") @Positive Integer size) {
-        log.info("CONTROLLER: GET users ids: {}, from = {}, size = {}", ids, from, size);
+        log.info("ADMIN CONTROLLER: GET users ids: {}, from = {}, size = {}", ids, from, size);
         return userService.getUsers(ids, from, size);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserResponseDto createUser(@Valid @RequestBody UserRequestDto userRequestDto) {
-        log.info("CONTROLLER: POST user {}", userRequestDto);
+        log.info("ADMIN CONTROLLER: POST user {}", userRequestDto);
         return userService.createUser(userRequestDto);
     }
 
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable Long userId) {
-        log.info("CONTROLLER: DELETE user id = {}", userId);
+        log.info("ADMIN CONTROLLER: DELETE user id = {}", userId);
         userService.deleteUser(userId);
     }
 }

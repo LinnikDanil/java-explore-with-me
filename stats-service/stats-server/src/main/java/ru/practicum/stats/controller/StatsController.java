@@ -3,10 +3,11 @@ package ru.practicum.stats.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.stats.exception.ValidationRequestException;
 import ru.practicum.stats.service.StatsService;
-import ru.practicum.stats.utils.TimeFormatUtil;
+import ru.practicum.stats.utils.TimeFormatConstants;
 import ru.practicum.stats_dto.HitDto;
 import ru.practicum.stats_dto.StatsDto;
 
@@ -21,14 +22,16 @@ public class StatsController {
     private final StatsService statsService;
 
     @PostMapping("/hit")
+    @ResponseStatus(HttpStatus.CREATED)
     public HitDto hit(@Valid @RequestBody HitDto hitDto) {
         log.info("hit stats {}", hitDto);
         return statsService.hit(hitDto);
     }
 
     @GetMapping("/stats")
-    public List<StatsDto> getStats(@RequestParam @DateTimeFormat(pattern = TimeFormatUtil.TIMESTAMP_FORMAT) LocalDateTime start,
-                                   @RequestParam @DateTimeFormat(pattern = TimeFormatUtil.TIMESTAMP_FORMAT) LocalDateTime end,
+    @ResponseStatus(HttpStatus.OK)
+    public List<StatsDto> getStats(@RequestParam @DateTimeFormat(pattern = TimeFormatConstants.TIMESTAMP_FORMAT) LocalDateTime start,
+                                   @RequestParam @DateTimeFormat(pattern = TimeFormatConstants.TIMESTAMP_FORMAT) LocalDateTime end,
                                    @RequestParam(required = false) List<String> uris,
                                    @RequestParam(defaultValue = "false") boolean unique
     ) {

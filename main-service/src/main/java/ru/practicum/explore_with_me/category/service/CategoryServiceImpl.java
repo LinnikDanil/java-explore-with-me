@@ -11,8 +11,10 @@ import ru.practicum.explore_with_me.category.dto.CategoryResponseDto;
 import ru.practicum.explore_with_me.category.mapper.CategoryMapper;
 import ru.practicum.explore_with_me.category.model.Category;
 import ru.practicum.explore_with_me.category.repository.CategoryRepository;
-import ru.practicum.explore_with_me.error.AlreadyExistEwmException;
-import ru.practicum.explore_with_me.error.NotFoundEwmException;
+import ru.practicum.explore_with_me.error.exception.AlreadyExistEwmException;
+import ru.practicum.explore_with_me.error.exception.ForbiddenActionEwmException;
+import ru.practicum.explore_with_me.error.exception.NotFoundEwmException;
+import ru.practicum.explore_with_me.event.repository.EventRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,10 +24,11 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
+    private final EventRepository eventRepository;
 
     @Override
     public CategoryResponseDto createCategory(CategoryRequestDto categoryRequestDto) {
-        log.info("SERVICE: CREATE category: {}", categoryRequestDto);
+        log.info("CATEGORY SERVICE: CREATE category: {}", categoryRequestDto);
 
         String updatedName = categoryRequestDto.getName();
         categoryRepository.findByName(updatedName)
@@ -44,7 +47,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     @Override
     public CategoryResponseDto updateCategory(CategoryRequestDto categoryRequestDto, Long catId) {
-        log.info("SERVICE: UPDATE category: {}, id = {}", categoryRequestDto, catId);
+        log.info("CATEGORY SERVICE: UPDATE category: {}, id = {}", categoryRequestDto, catId);
 
         Category oldCategory = categoryRepository.findById(catId).orElseThrow(() ->
                 new NotFoundEwmException(String.format("Category with id = %d not found", catId)));
@@ -57,47 +60,40 @@ public class CategoryServiceImpl implements CategoryService {
                     });
         }
 
-        Category updatedCategory = CategoryMapper.toCategory(categoryRequestDto, catId);
-        CategoryResponseDto categoryResponseDto = CategoryMapper.toCategoryDto(categoryRepository.save(updatedCategory));
-
-        log.info("categoryResponseDto: {}", categoryResponseDto);
-        return categoryResponseDto;
+        return CategoryMapper.toCategoryDto(categoryRepository.save(CategoryMapper.toCategory(categoryRequestDto, catId)));
     }
 
 
     @Override
     public void deleteCategory(Long catId) {
-        log.info("SERVICE: DELETE category id = {}", catId);
+        log.info("CATEGORY SERVICE: DELETE category id = {}", catId);
 
         categoryRepository.findById(catId).orElseThrow(() ->
                 new NotFoundEwmException(String.format("Category with id = %d not found", catId)));
+        eventRepository.findFirstByCategoryId(catId).ifPresent(event -> {
+            throw new ForbiddenActionEwmException(String.format("Category with id = %d is used for the event", catId));
+        });
 
         categoryRepository.deleteById(catId);
     }
 
     @Override
     public List<CategoryResponseDto> getCategories(Integer from, Integer size) {
-        log.info("SERVICE: GET categories: from = {}, size = {}", from, size);
+        log.info("CATEGORY SERVICE: GET categories: from = {}, size = {}", from, size);
 
         Pageable pageable = PageRequest.of(from / size, size);
 
-        List<CategoryResponseDto> categoryResponseDtoList = categoryRepository.findAll(pageable).stream()
+        return categoryRepository.findAll(pageable).stream()
                 .map(CategoryMapper::toCategoryDto)
                 .collect(Collectors.toList());
-
-        log.info("categoryResponseDtoList: {}", categoryResponseDtoList);
-        return categoryResponseDtoList;
     }
 
     @Override
     public CategoryResponseDto getCategoryById(Long catId) {
-        log.info("SERVICE: GET category id = {}", catId);
+        log.info("CATEGORY SERVICE: GET category id = {}", catId);
 
-        CategoryResponseDto categoryResponseDto = CategoryMapper.toCategoryDto(
+        return CategoryMapper.toCategoryDto(
                 categoryRepository.findById(catId).orElseThrow(() ->
                         new NotFoundEwmException(String.format("Category with id = %d not found", catId))));
-
-        log.info("categoryResponseDto: {}", categoryResponseDto);
-        return categoryResponseDto;
     }
 }

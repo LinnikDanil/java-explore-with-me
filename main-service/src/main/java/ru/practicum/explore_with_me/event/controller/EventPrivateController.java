@@ -50,7 +50,7 @@ public class EventPrivateController {
 
     @PatchMapping("/{eventId}")
     @ResponseStatus(HttpStatus.OK)
-    public EventFullResponseDto PatchEvent(@PathVariable Long userId,
+    public EventFullResponseDto patchEvent(@PathVariable Long userId,
                                            @PathVariable Long eventId,
                                            @Valid @RequestBody EventUpdateRequestDto eventUpdateRequestDto) {
         log.info("PRIVATE CONTROLLER: PATCH event: {}, userId = {}, eventId = {}", eventUpdateRequestDto, userId, eventId);

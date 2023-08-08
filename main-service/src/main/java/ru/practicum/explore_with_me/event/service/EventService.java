@@ -18,13 +18,17 @@ public interface EventService {
 
     List<ParticipationRequestDto> getUserRequestsByEventId(Long userId, Long eventId);
 
-    EventRequestStatusUpdateResponseDto patchUserRequestStatusForEvent(Long userId, Long eventId, EventRequestStatusUpdateRequestDto eventRequestStatusDto);
+    EventRequestStatusUpdateResponseDto patchUserRequestStatusForEvent(Long userId, Long eventId,
+                                                                       EventRequestStatusUpdateRequestDto eventRequestStatusDto);
 
-    List<EventShortResponseDto> getPublicEvents(String text, List<Long> categories, Boolean paid, String rangeStart, String rangeEnd, Boolean onlyAvailable, String sort, Integer from, Integer size, HttpServletRequest request);
+    List<EventShortResponseDto> getPublicEvents(String text, List<Long> categories, Boolean paid, String rangeStart,
+                                                String rangeEnd, Boolean onlyAvailable, String sort, Integer from,
+                                                Integer size, HttpServletRequest request);
 
     EventFullResponseDto getPublicEventById(Long eventId, HttpServletRequest request);
 
-    List<EventFullResponseDto> getAdminEvents(List<Long> users, List<String> states, List<Long> categories, String rangeStart, String rangeEnd, Integer from, Integer size);
+    List<EventFullResponseDto> getAdminEvents(List<Long> users, List<String> states, List<Long> categories,
+                                              String rangeStart, String rangeEnd, Integer from, Integer size);
 
     EventFullResponseDto patchAdminEvent(EventUpdateRequestDto eventUpdateRequestDto, Long eventId);
 }

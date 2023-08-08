@@ -30,12 +30,12 @@ public class UserServiceImpl implements UserService {
 
         if (ids == null || ids.isEmpty()) {
             return userRepository.findAll(pageable).stream()
-                    .map(UserMapper::toUserDto)
-                    .collect(Collectors.toList());
+                .map(UserMapper::toUserDto)
+                .collect(Collectors.toList());
         } else {
             return userRepository.findAllByIdIn(ids, pageable).stream()
-                    .map(UserMapper::toUserDto)
-                    .collect(Collectors.toList());
+                .map(UserMapper::toUserDto)
+                .collect(Collectors.toList());
         }
     }
 
@@ -44,9 +44,10 @@ public class UserServiceImpl implements UserService {
         log.info("USER SERVICE: CREATE userRequestDto: {}", userRequestDto);
 
         userRepository.findByName(userRequestDto.getName())
-                .ifPresent(e -> {
-                    throw new AlreadyExistEwmException(String.format("A user named %s already exists", userRequestDto.getName()));
-                });
+            .ifPresent(e -> {
+                throw new AlreadyExistEwmException(
+                    String.format("A user named %s already exists", userRequestDto.getName()));
+            });
 
         return UserMapper.toUserDto(userRepository.save(UserMapper.toUser(userRequestDto)));
     }
@@ -57,7 +58,7 @@ public class UserServiceImpl implements UserService {
         log.info("USER SERVICE: DELETE user id: {}", userId);
 
         userRepository.findById(userId).orElseThrow(
-                () -> new NotFoundEwmException(String.format("user with id = %d not found", userId)));
+            () -> new NotFoundEwmException(String.format("user with id = %d not found", userId)));
 
         userRepository.deleteById(userId);
     }

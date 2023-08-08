@@ -28,7 +28,8 @@ public class RequestPrivateController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ParticipationRequestDto postRequest(@NotNull @PathVariable Long userId, @NotNull @RequestParam Long eventId) {
+    public ParticipationRequestDto postRequest(@NotNull @PathVariable Long userId,
+                                               @NotNull @RequestParam Long eventId) {
         log.info("PRIVATE CONTROLLER: POST request, userId = {}, eventId = {}", userId, eventId);
         return requestService.createRequest(userId, eventId);
     }

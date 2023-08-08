@@ -32,13 +32,17 @@ public class EventPublicController {
                                                       @RequestParam(required = false) String rangeEnd,
                                                       @RequestParam(defaultValue = "false") Boolean onlyAvailable,
                                                       @RequestParam(required = false) String sort,
-                                                      @RequestParam(defaultValue = EventPageConstants.PAGE_FROM) @PositiveOrZero Integer from,
-                                                      @RequestParam(defaultValue = EventPageConstants.PAGE_SIZE) @Positive Integer size,
+                                                      @RequestParam(defaultValue = EventPageConstants.PAGE_FROM)
+                                                      @PositiveOrZero Integer from,
+                                                      @RequestParam(defaultValue = EventPageConstants.PAGE_SIZE)
+                                                      @Positive Integer size,
                                                       HttpServletRequest request) {
-        log.info("PUBLIC CONTROLLER: GET short events. text: {}, categories: {}, paid = {}, rangeStart: {}, rangeEnd: {}," +
-                        "onlyAvailable = {}, sort = {}, from = {}, size = {}, request = {}",
-                text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, request);
-        return eventService.getPublicEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, request);
+        log.info(
+            "PUBLIC CONTROLLER: GET short events. text: {}, categories: {}, paid = {}, rangeStart: {}, rangeEnd: {}," +
+                "onlyAvailable = {}, sort = {}, from = {}, size = {}, request = {}",
+            text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, request);
+        return eventService.getPublicEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from,
+            size, request);
     }
 
     @GetMapping("/{eventId}")

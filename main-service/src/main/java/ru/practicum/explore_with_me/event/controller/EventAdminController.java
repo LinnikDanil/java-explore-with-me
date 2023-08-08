@@ -30,10 +30,13 @@ public class EventAdminController {
                                                     @RequestParam(required = false) List<Long> categories,
                                                     @RequestParam(required = false) String rangeStart,
                                                     @RequestParam(required = false) String rangeEnd,
-                                                    @RequestParam(defaultValue = EventPageConstants.PAGE_FROM) @PositiveOrZero Integer from,
-                                                    @RequestParam(defaultValue = EventPageConstants.PAGE_SIZE) @Positive Integer size) {
-        log.info("ADMIN CONTROLLER: GET full events. Users: {}, states: {}, categories: {}, rangeStart: {}, rangeEnd: {}, from = {}, size = {}",
-                users, states, categories, rangeStart, rangeEnd, from, size);
+                                                    @RequestParam(defaultValue = EventPageConstants.PAGE_FROM)
+                                                    @PositiveOrZero Integer from,
+                                                    @RequestParam(defaultValue = EventPageConstants.PAGE_SIZE)
+                                                    @Positive Integer size) {
+        log.info(
+            "ADMIN CONTROLLER: GET full events. Users: {}, states: {}, categories: {}, rangeStart: {}, rangeEnd: {}, from = {}, size = {}",
+            users, states, categories, rangeStart, rangeEnd, from, size);
         return eventService.getAdminEvents(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 

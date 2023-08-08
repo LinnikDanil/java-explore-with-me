@@ -26,8 +26,10 @@ public class EventPrivateController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<EventShortResponseDto> getShortEvents(@PathVariable Long userId,
-                                                      @RequestParam(defaultValue = EventPageConstants.PAGE_FROM) @PositiveOrZero Integer from,
-                                                      @RequestParam(defaultValue = EventPageConstants.PAGE_SIZE) @Positive Integer size) {
+                                                      @RequestParam(defaultValue = EventPageConstants.PAGE_FROM)
+                                                      @PositiveOrZero Integer from,
+                                                      @RequestParam(defaultValue = EventPageConstants.PAGE_SIZE)
+                                                      @Positive Integer size) {
         log.info("PRIVATE CONTROLLER: GET short events. userId = {}, from = {}, size = {}", userId, from, size);
         return eventService.getUserEvents(userId, from, size);
     }
@@ -53,7 +55,8 @@ public class EventPrivateController {
     public EventFullResponseDto patchEvent(@PathVariable Long userId,
                                            @PathVariable Long eventId,
                                            @Valid @RequestBody EventUpdateRequestDto eventUpdateRequestDto) {
-        log.info("PRIVATE CONTROLLER: PATCH event: {}, userId = {}, eventId = {}", eventUpdateRequestDto, userId, eventId);
+        log.info("PRIVATE CONTROLLER: PATCH event: {}, userId = {}, eventId = {}", eventUpdateRequestDto, userId,
+            eventId);
         return eventService.patchUserEvent(eventUpdateRequestDto, userId, eventId);
     }
 
@@ -69,8 +72,10 @@ public class EventPrivateController {
     @ResponseStatus(HttpStatus.OK)
     public EventRequestStatusUpdateResponseDto patchRequestsStatsForEvent(@PathVariable Long userId,
                                                                           @PathVariable Long eventId,
-                                                                          @Valid @RequestBody EventRequestStatusUpdateRequestDto eventRequestStatusDto) {
-        log.info("PRIVATE CONTROLLER: PATCH request status: {}, by eventId= {}, userId = {}", eventRequestStatusDto, eventId, userId);
+                                                                          @Valid @RequestBody
+                                                                          EventRequestStatusUpdateRequestDto eventRequestStatusDto) {
+        log.info("PRIVATE CONTROLLER: PATCH request status: {}, by eventId= {}, userId = {}", eventRequestStatusDto,
+            eventId, userId);
         return eventService.patchUserRequestStatusForEvent(userId, eventId, eventRequestStatusDto);
     }
 }

@@ -21,10 +21,7 @@ import ru.practicum.explore_with_me.request.model.RequestStatuses;
 import ru.practicum.explore_with_me.request.repository.RequestRepository;
 import ru.practicum.explore_with_me.utils.EventStatsClient;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,11 +41,11 @@ public class CompilationServiceImpl implements CompilationService {
         Pageable pageable = PageRequest.of(from / size, size);
 
         List<Compilation> compilations = pinned != null ? compilationRepository.findAllByPinnedEquals(pinned, pageable)
-                : compilationRepository.findAll(pageable).getContent();
+            : compilationRepository.findAll(pageable).getContent();
 
-        List<Event> events = compilations.stream()
-                .flatMap(compilation -> compilation.getEvents().stream())
-                .collect(Collectors.toList());
+        Set<Event> events = compilations.stream()
+            .flatMap(compilation -> compilation.getEvents().stream())
+            .collect(Collectors.toSet());
         List<EventShortResponseDto> eventsDto = getEventShortDto(events);
 
         return CompilationMapper.toCompilationsDto(compilations, eventsDto);
@@ -72,7 +69,7 @@ public class CompilationServiceImpl implements CompilationService {
             events.addAll(eventRepository.findAllById(compilationDto.getEvents()));
         }
         return CompilationMapper.toCompilationDto(
-                compilationRepository.save(CompilationMapper.toCompilation(compilationDto, events)));
+            compilationRepository.save(CompilationMapper.toCompilation(compilationDto, events)));
     }
 
     @Override
@@ -102,26 +99,27 @@ public class CompilationServiceImpl implements CompilationService {
         return CompilationMapper.toCompilationDto(compilationRepository.save(compilation));
     }
 
-    private List<EventShortResponseDto> getEventShortDto(List<Event> events) {
-        Map<Long, Long> viewsPerEvent = eventStatsClient.getViewsPerEvent(events);
+    private List<EventShortResponseDto> getEventShortDto(Set<Event> events) {
+        Map<Long, Long> viewsPerEvent = eventStatsClient.getViewsPerEvent(new ArrayList<>(events));
 
         List<Long> eventsIds = events.stream()
-                .map(Event::getId)
-                .collect(Collectors.toList());
-        Map<Long, Long> confirmedRequestsPerEvent = requestRepository.findAllByEventIdInAndStatusEquals(eventsIds, RequestStatuses.CONFIRMED)
+            .map(Event::getId)
+            .collect(Collectors.toList());
+        Map<Long, Long> confirmedRequestsPerEvent =
+            requestRepository.findAllByEventIdInAndStatusEquals(eventsIds, RequestStatuses.CONFIRMED)
                 .stream()
                 .collect(Collectors.groupingBy(req -> req.getEvent().getId(), Collectors.counting()));
 
         return events.stream()
-                .map(event -> EventMapper.toEventShortDto(
-                        event,
-                        confirmedRequestsPerEvent.getOrDefault(event.getId(), 0L),
-                        viewsPerEvent.getOrDefault(event.getId(), 0L)))
-                .collect(Collectors.toList());
+            .map(event -> EventMapper.toEventShortDto(
+                event,
+                confirmedRequestsPerEvent.getOrDefault(event.getId(), 0L),
+                viewsPerEvent.getOrDefault(event.getId(), 0L)))
+            .collect(Collectors.toList());
     }
 
     private Compilation getCompilationOrThrow(Long compId) {
         return compilationRepository.findById(compId).orElseThrow(
-                () -> new NotFoundEwmException(String.format("Compilation with id = %d not found.", compId)));
+            () -> new NotFoundEwmException(String.format("Compilation with id = %d not found.", compId)));
     }
 }

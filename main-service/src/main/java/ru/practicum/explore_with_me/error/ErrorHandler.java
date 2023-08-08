@@ -21,15 +21,15 @@ import ru.practicum.explore_with_me.request.controller.RequestPrivateController;
 import ru.practicum.explore_with_me.user.controller.UserAdminController;
 
 @RestControllerAdvice(assignableTypes = {
-        CategoryPublicController.class,
-        CategoryAdminController.class,
-        CompilationAdminController.class,
-        CompilationPublicController.class,
-        EventAdminController.class,
-        EventPublicController.class,
-        EventPrivateController.class,
-        RequestPrivateController.class,
-        UserAdminController.class
+    CategoryPublicController.class,
+    CategoryAdminController.class,
+    CompilationAdminController.class,
+    CompilationPublicController.class,
+    EventAdminController.class,
+    EventPublicController.class,
+    EventPrivateController.class,
+    RequestPrivateController.class,
+    UserAdminController.class
 })
 @Slf4j
 public class ErrorHandler {
@@ -84,7 +84,8 @@ public class ErrorHandler {
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleMissingServletRequestParameterException(final MissingServletRequestParameterException e) {
+    public ErrorResponse handleMissingServletRequestParameterException(
+        final MissingServletRequestParameterException e) {
         log.error("Received status 400 Bad Request {}", e.getMessage(), e);
         return new ErrorResponse(e.getMessage());
     }

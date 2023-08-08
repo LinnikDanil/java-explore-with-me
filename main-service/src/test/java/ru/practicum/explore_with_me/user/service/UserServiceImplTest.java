@@ -27,15 +27,15 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
     private final User user1 = User.builder()
-            .id(1L)
-            .name("user1")
-            .email("user1@mail.ru")
-            .build();
+        .id(1L)
+        .name("user1")
+        .email("user1@mail.ru")
+        .build();
     private final User user2 = User.builder()
-            .id(2L)
-            .name("user2")
-            .email("user2@mail.ru")
-            .build();
+        .id(2L)
+        .name("user2")
+        .email("user2@mail.ru")
+        .build();
     private UserService userService;
     @Mock
     private UserRepository userRepository;
@@ -70,8 +70,8 @@ class UserServiceImplTest {
 
         // Проверка, что AlreadyExistEwmException выбрасывается при попытке создать пользователя с уже существующим именем
         Exception exception = assertThrows(
-                AlreadyExistEwmException.class,
-                () -> userService.createUser(userRequestDto)
+            AlreadyExistEwmException.class,
+            () -> userService.createUser(userRequestDto)
         );
 
         // Проверка, что сообщение исключения содержит ожидаемое сообщение
@@ -92,7 +92,7 @@ class UserServiceImplTest {
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(
-                NotFoundEwmException.class, () -> userService.deleteUser(userId));
+            NotFoundEwmException.class, () -> userService.deleteUser(userId));
 
         String expectedMessage = String.format("user with id = %d not found", userId);
         String actualMessage = exception.getMessage();

@@ -34,7 +34,6 @@ public class CompilationServiceImpl implements CompilationService {
     private final EventRepository eventRepository;
 
     @Override
-    @Transactional(readOnly = true)
     public List<CompilationResponseDto> getCompilations(Boolean pinned, Integer from, Integer size) {
         log.info("COMPILATION SERVICE: GET compilations pinned = {}, from = {}, size = {}", pinned, from, size);
 

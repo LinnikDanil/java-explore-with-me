@@ -22,16 +22,4 @@ public class User {
 
     @Column(nullable = false)
     private String name;
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof User)) return false;
-        return id != null && id.equals(((User) obj).getId());
-    }
 }

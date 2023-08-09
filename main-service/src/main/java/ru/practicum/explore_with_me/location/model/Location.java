@@ -22,16 +22,4 @@ public class Location {
 
     @Column(nullable = false)
     private Float lon;
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof Location)) return false;
-        return id != null && id.equals(((Location) obj).getId());
-    }
 }

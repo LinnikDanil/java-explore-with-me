@@ -51,7 +51,6 @@ public class EventServiceImpl implements EventService {
     private final RequestRepository requestRepository;
     private final EventStatsClient eventStatsClient;
 
-    @Transactional(readOnly = true)
     @Override
     public List<EventShortResponseDto> getUserEvents(Long userId, Integer from, Integer size) {
         log.info("EVENT SERVICE: GET events userId = {}, from = {}, size = {}", userId, from, size);
@@ -80,7 +79,6 @@ public class EventServiceImpl implements EventService {
         return EventMapper.toEventFullDto(eventRepository.save(event));
     }
 
-    @Transactional(readOnly = true)
     @Override
     public EventFullResponseDto getUserEventById(Long userId, Long eventId) {
         log.info("EVENT SERVICE: GET event user id = {}, event id = {}", userId, eventId);
@@ -112,7 +110,6 @@ public class EventServiceImpl implements EventService {
         return EventMapper.toEventFullDto(eventRepository.save(event));
     }
 
-    @Transactional
     @Override
     public List<ParticipationRequestDto> getUserRequestsByEventId(Long userId, Long eventId) {
         log.info("EVENT SERVICE: GET requests user id = {}, event id = {}", userId, eventId);
@@ -182,7 +179,6 @@ public class EventServiceImpl implements EventService {
                 .collect(Collectors.toList()));
     }
 
-    @Transactional(readOnly = true)
     @Override
     public List<EventShortResponseDto> getPublicEvents(String text, List<Long> categories, Boolean paid,
                                                        String rangeStart, String rangeEnd, Boolean onlyAvailable,
@@ -233,7 +229,6 @@ public class EventServiceImpl implements EventService {
         return result;
     }
 
-    @Transactional(readOnly = true)
     @Override
     public EventFullResponseDto getPublicEventById(Long eventId, HttpServletRequest request) {
         log.info("EVENT SERVICE: get Public event id = {}, request = {}", eventId, request);
@@ -249,7 +244,6 @@ public class EventServiceImpl implements EventService {
         return EventMapper.toEventFullDto(event, confirmedRequests, views);
     }
 
-    @Transactional(readOnly = true)
     @Override
     public List<EventFullResponseDto> getAdminEvents(List<Long> users, List<String> states, List<Long> categories,
                                                      String rangeStart, String rangeEnd, Integer from, Integer size) {

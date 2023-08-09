@@ -40,16 +40,4 @@ public class Request {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     RequestStatuses status;
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof Request)) return false;
-        return id != null && id.equals(((Request) obj).getId());
-    }
 }

@@ -39,6 +39,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public UserResponseDto createUser(UserRequestDto userRequestDto) {
         log.info("USER SERVICE: CREATE userRequestDto: {}", userRequestDto);

@@ -26,6 +26,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final EventRepository eventRepository;
 
+    @Transactional
     @Override
     public CategoryResponseDto createCategory(CategoryRequestDto categoryRequestDto) {
         log.info("CATEGORY SERVICE: CREATE category: {}", categoryRequestDto);
@@ -66,6 +67,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
 
+    @Transactional
     @Override
     public void deleteCategory(Long catId) {
         log.info("CATEGORY SERVICE: DELETE category id = {}", catId);

@@ -69,16 +69,4 @@ public class Event {
 
     @Column(name = "published_date")
     LocalDateTime publishedOn;
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof Event)) return false;
-        return id != null && id.equals(((Event) obj).getId());
-    }
 }

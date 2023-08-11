@@ -15,20 +15,20 @@ import static ru.practicum.explore_with_me.utils.EventTimeFormatConstants.TIMEST
 public class RequestMapper {
     public static Request toRequest(LocalDateTime created, Event event, User requester, RequestStatuses status) {
         return Request.builder()
-            .created(created)
-            .event(event)
-            .requester(requester)
-            .status(status)
-            .build();
+                .created(created)
+                .event(event)
+                .requester(requester)
+                .status(status)
+                .build();
     }
 
     public static ParticipationRequestDto toParticipationRequestDto(Request request) {
         return ParticipationRequestDto.builder()
-            .created(request.getCreated().format(TIMESTAMP_FORMATTER))
-            .event(request.getEvent().getId())
-            .id(request.getId())
-            .requester(request.getRequester().getId())
-            .status(request.getStatus().toString())
-            .build();
+                .created(request.getCreated().format(TIMESTAMP_FORMATTER))
+                .event(request.getEvent().getId())
+                .id(request.getId())
+                .requester(request.getRequester().getId())
+                .status(request.getStatus().toString())
+                .build();
     }
 }

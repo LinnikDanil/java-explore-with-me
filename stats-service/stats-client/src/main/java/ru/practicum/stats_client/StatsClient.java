@@ -23,10 +23,10 @@ public class StatsClient extends BaseClient {
     @Autowired
     public StatsClient(@Value("${stats-server.url}") String serverUrl, RestTemplateBuilder builder) {
         super(
-            builder
-                .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl))
-                .requestFactory(HttpComponentsClientHttpRequestFactory::new)
-                .build()
+                builder
+                        .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl))
+                        .requestFactory(HttpComponentsClientHttpRequestFactory::new)
+                        .build()
         );
     }
 
@@ -47,21 +47,21 @@ public class StatsClient extends BaseClient {
         }
 
         log.info("Stats Client send request GET STATS: start: {}, end: {}, uris: {}, unique: {}", start, end, uris,
-            unique);
+                unique);
 
         Map<String, Object> parameters = Map.of(
-            "start", start.format(TimeFormatConstants.TIMESTAMP_FORMATTER),
-            "end", end.format(TimeFormatConstants.TIMESTAMP_FORMATTER)
+                "start", start.format(TimeFormatConstants.TIMESTAMP_FORMATTER),
+                "end", end.format(TimeFormatConstants.TIMESTAMP_FORMATTER)
         );
 
         StringBuilder path = new StringBuilder("/stats?start={start}&end={end}");
 
         Optional.ofNullable(uris)
-            .orElse(Collections.emptyList())
-            .forEach(uri -> path.append("&uris=").append(uri));
+                .orElse(Collections.emptyList())
+                .forEach(uri -> path.append("&uris=").append(uri));
 
         Optional.ofNullable(unique)
-            .ifPresent(u -> path.append("&unique=").append(u));
+                .ifPresent(u -> path.append("&unique=").append(u));
 
         return get(path.toString(), parameters);
     }

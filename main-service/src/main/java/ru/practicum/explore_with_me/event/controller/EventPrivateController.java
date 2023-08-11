@@ -56,7 +56,7 @@ public class EventPrivateController {
                                            @PathVariable Long eventId,
                                            @Valid @RequestBody EventUpdateRequestDto eventUpdateRequestDto) {
         log.info("PRIVATE CONTROLLER: PATCH event: {}, userId = {}, eventId = {}", eventUpdateRequestDto, userId,
-            eventId);
+                eventId);
         return eventService.patchUserEvent(eventUpdateRequestDto, userId, eventId);
     }
 
@@ -75,7 +75,7 @@ public class EventPrivateController {
                                                                           @Valid @RequestBody
                                                                           EventRequestStatusUpdateRequestDto eventRequestStatusDto) {
         log.info("PRIVATE CONTROLLER: PATCH request status: {}, by eventId= {}, userId = {}", eventRequestStatusDto,
-            eventId, userId);
+                eventId, userId);
         return eventService.patchUserRequestStatusForEvent(userId, eventId, eventRequestStatusDto);
     }
 }

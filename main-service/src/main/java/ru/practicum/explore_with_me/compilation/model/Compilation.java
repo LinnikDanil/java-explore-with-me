@@ -21,8 +21,8 @@ public class Compilation {
     Boolean pinned;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "compilation_events",
-        joinColumns = @JoinColumn(name = "compilation_id"),
-        inverseJoinColumns = @JoinColumn(name = "event_id"))
+            joinColumns = @JoinColumn(name = "compilation_id"),
+            inverseJoinColumns = @JoinColumn(name = "event_id"))
     Set<Event> events;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

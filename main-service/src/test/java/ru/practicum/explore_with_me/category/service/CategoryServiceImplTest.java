@@ -22,13 +22,13 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class CategoryServiceImplTest {
     private final Category category1 = Category.builder()
-        .id(1L)
-        .name("category1")
-        .build();
+            .id(1L)
+            .name("category1")
+            .build();
     private final Category category2 = Category.builder()
-        .id(2L)
-        .name("category2")
-        .build();
+            .id(2L)
+            .name("category2")
+            .build();
 
     private CategoryService categoryService;
     @Mock
@@ -65,7 +65,7 @@ class CategoryServiceImplTest {
         when(categoryRepository.findById(categoryId)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(
-            NotFoundEwmException.class, () -> categoryService.updateCategory(categoryRequestDto, categoryId));
+                NotFoundEwmException.class, () -> categoryService.updateCategory(categoryRequestDto, categoryId));
 
         String expectedMessage = String.format("Category with id = %d not found", categoryId);
         String actualMessage = exception.getMessage();
@@ -83,8 +83,8 @@ class CategoryServiceImplTest {
         when(categoryRepository.findByName(categoryRequestDto.getName())).thenReturn(Optional.of(category2));
 
         Exception exception = assertThrows(
-            AlreadyExistEwmException.class,
-            () -> categoryService.updateCategory(categoryRequestDto, category1.getId()));
+                AlreadyExistEwmException.class,
+                () -> categoryService.updateCategory(categoryRequestDto, category1.getId()));
 
         String expectedMessage = String.format("A category named %s already exists", categoryRequestDto.getName());
         String actualMessage = exception.getMessage();
@@ -103,8 +103,8 @@ class CategoryServiceImplTest {
         when(categoryRepository.findByName(categoryRequestDto.getName())).thenReturn(Optional.of(category1));
 
         Exception exception = assertThrows(
-            AlreadyExistEwmException.class,
-            () -> categoryService.createCategory(categoryRequestDto)
+                AlreadyExistEwmException.class,
+                () -> categoryService.createCategory(categoryRequestDto)
         );
 
         String expectedMessage = String.format("A category named %s already exists", categoryRequestDto.getName());
@@ -123,7 +123,7 @@ class CategoryServiceImplTest {
         when(categoryRepository.findById(categoryId)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(
-            NotFoundEwmException.class, () -> categoryService.deleteCategory(categoryId));
+                NotFoundEwmException.class, () -> categoryService.deleteCategory(categoryId));
 
         String expectedMessage = String.format("Category with id = %d not found", categoryId);
         String actualMessage = exception.getMessage();
@@ -140,7 +140,7 @@ class CategoryServiceImplTest {
         when(categoryRepository.findById(categoryId)).thenReturn(Optional.empty());
 
         Exception exception = assertThrows(
-            NotFoundEwmException.class, () -> categoryService.getCategoryById(categoryId));
+                NotFoundEwmException.class, () -> categoryService.getCategoryById(categoryId));
 
         String expectedMessage = String.format("Category with id = %d not found", categoryId);
         String actualMessage = exception.getMessage();

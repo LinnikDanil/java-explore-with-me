@@ -59,8 +59,8 @@ public class EventServiceImpl implements EventService {
         Pageable pageable = PageRequest.of(from / size, size);
 
         return eventRepository.findAllByInitiatorId(userId, pageable).stream()
-            .map(EventMapper::toEventShortDto)
-            .collect(Collectors.toList());
+                .map(EventMapper::toEventShortDto)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -74,7 +74,7 @@ public class EventServiceImpl implements EventService {
         Location location = getOrSaveLocation(LocationMapper.toLocation(eventRequestDto.getLocation()));
 
         Event event =
-            EventMapper.toEvent(eventRequestDto, category, user, location, LocalDateTime.now(), EventState.PENDING);
+                EventMapper.toEvent(eventRequestDto, category, user, location, LocalDateTime.now(), EventState.PENDING);
 
         return EventMapper.toEventFullDto(eventRepository.save(event));
     }
@@ -100,7 +100,7 @@ public class EventServiceImpl implements EventService {
             throw new ForbiddenActionEwmException("Only canceled events or events pending moderation can be modified");
         }
         if (eventDto.getStateAction() != null &&
-            StateActionForUser.CANCEL_REVIEW.equals(StateActionForUser.valueOf(eventDto.getStateAction()))) {
+                StateActionForUser.CANCEL_REVIEW.equals(StateActionForUser.valueOf(eventDto.getStateAction()))) {
             event.setState(EventState.CANCELED);
         } else {
             event.setState(EventState.PENDING);
@@ -117,8 +117,8 @@ public class EventServiceImpl implements EventService {
         getEventByEventIdAndInitiatorIdOrThrow(eventId, userId);
 
         return requestRepository.findAllByEventIdAndEventInitiatorId(eventId, userId).stream()
-            .map(RequestMapper::toParticipationRequestDto)
-            .collect(Collectors.toList());
+                .map(RequestMapper::toParticipationRequestDto)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -126,13 +126,13 @@ public class EventServiceImpl implements EventService {
     public EventRequestStatusUpdateResponseDto patchUserRequestStatusForEvent(Long userId, Long eventId,
                                                                               EventRequestStatusUpdateRequestDto requestStatusesDto) {
         log.info("EVENT SERVICE: PATCH requests by event id = {}, user id = {}, requestStatus = {}", eventId, userId,
-            requestStatusesDto);
+                requestStatusesDto);
 
         Event event = getEventByEventIdAndInitiatorIdOrThrow(eventId, userId);
 
         if (!event.getRequestModeration()
-            || event.getParticipantLimit() == 0
-            || requestStatusesDto.getRequestIds().isEmpty()
+                || event.getParticipantLimit() == 0
+                || requestStatusesDto.getRequestIds().isEmpty()
         ) {
             return new EventRequestStatusUpdateResponseDto(Collections.emptyList(), Collections.emptyList());
         }
@@ -141,7 +141,7 @@ public class EventServiceImpl implements EventService {
 
         if (requests.size() != requestStatusesDto.getRequestIds().size()) {
             throw new NotFoundEwmException(String.format("Found %d requests but expected %d", requests.size(),
-                requestStatusesDto.getRequestIds().size()));
+                    requestStatusesDto.getRequestIds().size()));
         }
 
         List<Request> confirmedList = new ArrayList<>();
@@ -152,7 +152,7 @@ public class EventServiceImpl implements EventService {
         for (Request request : requests) {
             if (!request.getStatus().equals(RequestStatuses.PENDING)) {
                 throw new ForbiddenActionEwmException(
-                    String.format("Status = %s. Only pending requests can be changed", request.getStatus()));
+                        String.format("Status = %s. Only pending requests can be changed", request.getStatus()));
             }
             if (RequestStatuses.CONFIRMED.equals(RequestStatuses.valueOf(requestStatusesDto.getStatus()))) {
                 if (participantCount >= event.getParticipantLimit()) {
@@ -171,12 +171,12 @@ public class EventServiceImpl implements EventService {
         requestRepository.saveAll(rejectedList);
 
         return new EventRequestStatusUpdateResponseDto(
-            confirmedList.stream()
-                .map(RequestMapper::toParticipationRequestDto)
-                .collect(Collectors.toList()),
-            rejectedList.stream()
-                .map(RequestMapper::toParticipationRequestDto)
-                .collect(Collectors.toList()));
+                confirmedList.stream()
+                        .map(RequestMapper::toParticipationRequestDto)
+                        .collect(Collectors.toList()),
+                rejectedList.stream()
+                        .map(RequestMapper::toParticipationRequestDto)
+                        .collect(Collectors.toList()));
     }
 
     @Override
@@ -185,16 +185,16 @@ public class EventServiceImpl implements EventService {
                                                        String sort, Integer from, Integer size,
                                                        HttpServletRequest request) {
         log.info("EVENT SERVICE: get Public events text: {}, categories: {}, paid = {}, rangeStart: {}, rangeEnd: {}," +
-                "onlyAvailable = {}, sort = {}, from = {}, size = {}, request = {}",
-            text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, request);
+                        "onlyAvailable = {}, sort = {}, from = {}, size = {}, request = {}",
+                text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, request);
 
         Sort sortOrder = Sort.by(Sort.Direction.ASC, "eventDate");
         Pageable pageable = PageRequest.of(from / size, size, sortOrder);
 
         LocalDateTime startDate =
-            rangeStart != null ? LocalDateTime.parse(rangeStart, TIMESTAMP_FORMATTER) : LocalDateTime.now();
+                rangeStart != null ? LocalDateTime.parse(rangeStart, TIMESTAMP_FORMATTER) : LocalDateTime.now();
         LocalDateTime endDate =
-            rangeEnd != null ? LocalDateTime.parse(rangeEnd, TIMESTAMP_FORMATTER) : LocalDateTime.now().plusYears(100);
+                rangeEnd != null ? LocalDateTime.parse(rangeEnd, TIMESTAMP_FORMATTER) : LocalDateTime.now().plusYears(100);
 
         if (startDate.isAfter(endDate)) {
             throw new ValidationEwmException("The start date of the search cannot be later than the end date");
@@ -203,7 +203,7 @@ public class EventServiceImpl implements EventService {
         // создание Predicate для Querydsl
         BooleanBuilder builder = new BooleanBuilder();
         Optional.ofNullable(text).ifPresent(t -> builder.and(QEvent.event.annotation.likeIgnoreCase(t)
-            .or(QEvent.event.description.likeIgnoreCase(t))));
+                .or(QEvent.event.description.likeIgnoreCase(t))));
         Optional.ofNullable(categories).ifPresent(c -> builder.and(QEvent.event.category.id.in(c)));
         Optional.ofNullable(paid).ifPresent(p -> builder.and(QEvent.event.paid.eq(p)));
         builder.and(QEvent.event.state.eq(EventState.PUBLISHED));
@@ -217,11 +217,11 @@ public class EventServiceImpl implements EventService {
         Map<Long, Long> viewsPerEvent = eventStatsClient.getViewsPerEvent(events);
 
         List<EventShortResponseDto> result = events.stream()
-            .map(event -> EventMapper.toEventShortDto(
-                event,
-                confirmedRequestsPerEvent.getOrDefault(event.getId(), 0L),
-                viewsPerEvent.getOrDefault(event.getId(), 0L)))
-            .collect(Collectors.toList());
+                .map(event -> EventMapper.toEventShortDto(
+                        event,
+                        confirmedRequestsPerEvent.getOrDefault(event.getId(), 0L),
+                        viewsPerEvent.getOrDefault(event.getId(), 0L)))
+                .collect(Collectors.toList());
 
         if ("VIEWS".equals(sort)) {
             result.sort(Comparator.comparing(dto -> viewsPerEvent.getOrDefault(dto.getId(), 0L)));
@@ -234,7 +234,7 @@ public class EventServiceImpl implements EventService {
         log.info("EVENT SERVICE: get Public event id = {}, request = {}", eventId, request);
 
         Event event = eventRepository.findByIdAndStateEquals(eventId, EventState.PUBLISHED).orElseThrow(
-            () -> new NotFoundEwmException(String.format("Published event with id = %d not found.", eventId)));
+                () -> new NotFoundEwmException(String.format("Published event with id = %d not found.", eventId)));
 
         eventStatsClient.addHit(request);
 
@@ -248,8 +248,8 @@ public class EventServiceImpl implements EventService {
     public List<EventFullResponseDto> getAdminEvents(List<Long> users, List<String> states, List<Long> categories,
                                                      String rangeStart, String rangeEnd, Integer from, Integer size) {
         log.info(
-            "EVENT SERVICE: GET full admin events. Users: {}, states: {}, categories: {}, rangeStart: {}, rangeEnd: {}, from = {}, size = {}",
-            users, states, categories, rangeStart, rangeEnd, from, size);
+                "EVENT SERVICE: GET full admin events. Users: {}, states: {}, categories: {}, rangeStart: {}, rangeEnd: {}, from = {}, size = {}",
+                users, states, categories, rangeStart, rangeEnd, from, size);
 
         Pageable pageable = PageRequest.of(from / size, size);
 
@@ -257,13 +257,13 @@ public class EventServiceImpl implements EventService {
         BooleanBuilder builder = new BooleanBuilder();
         Optional.ofNullable(users).ifPresent(u -> builder.and(QEvent.event.initiator.id.in(u)));
         Optional.ofNullable(states)
-            .ifPresent(s -> builder.and(
-                QEvent.event.state.in(s.stream().map(EventState::valueOf).collect(Collectors.toList()))));
+                .ifPresent(s -> builder.and(
+                        QEvent.event.state.in(s.stream().map(EventState::valueOf).collect(Collectors.toList()))));
         Optional.ofNullable(categories).ifPresent(c -> builder.and(QEvent.event.category.id.in(c)));
         Optional.ofNullable(rangeStart)
-            .ifPresent(rs -> builder.and(QEvent.event.eventDate.after(LocalDateTime.parse(rs, TIMESTAMP_FORMATTER))));
+                .ifPresent(rs -> builder.and(QEvent.event.eventDate.after(LocalDateTime.parse(rs, TIMESTAMP_FORMATTER))));
         Optional.ofNullable(rangeEnd)
-            .ifPresent(re -> builder.and(QEvent.event.eventDate.before(LocalDateTime.parse(re, TIMESTAMP_FORMATTER))));
+                .ifPresent(re -> builder.and(QEvent.event.eventDate.before(LocalDateTime.parse(re, TIMESTAMP_FORMATTER))));
 
         Predicate predicate = builder.getValue();
         List<Event> events;
@@ -277,11 +277,11 @@ public class EventServiceImpl implements EventService {
         Map<Long, Long> viewsPerEvent = eventStatsClient.getViewsPerEvent(events);
 
         return events.stream()
-            .map(event -> EventMapper.toEventFullDto(
-                event,
-                confirmedRequestsPerEvent.getOrDefault(event.getId(), 0L),
-                viewsPerEvent.getOrDefault(event.getId(), 0L)))
-            .collect(Collectors.toList());
+                .map(event -> EventMapper.toEventFullDto(
+                        event,
+                        confirmedRequestsPerEvent.getOrDefault(event.getId(), 0L),
+                        viewsPerEvent.getOrDefault(event.getId(), 0L)))
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -291,7 +291,7 @@ public class EventServiceImpl implements EventService {
 
         checkTimeEvent(eventDto.getEventDate());
         Event event = eventRepository.findById(eventId)
-            .orElseThrow(() -> new NotFoundEwmException(String.format("Event id = %d not found", eventId)));
+                .orElseThrow(() -> new NotFoundEwmException(String.format("Event id = %d not found", eventId)));
 
         if (eventDto.getStateAction() != null) {
             if (eventDto.getStateAction().equals("PUBLISH_EVENT")) {
@@ -306,7 +306,7 @@ public class EventServiceImpl implements EventService {
             if (eventDto.getStateAction().equals("REJECT_EVENT")) {
                 if (event.getState().equals(EventState.PUBLISHED)) {
                     throw new ForbiddenActionEwmException(
-                        "an event can only be rejected if it has not yet been published");
+                            "an event can only be rejected if it has not yet been published");
                 }
                 if (event.getState().equals(EventState.CANCELED)) {
                     throw new ForbiddenActionEwmException("Event is already canceled");
@@ -321,42 +321,42 @@ public class EventServiceImpl implements EventService {
 
     private User getUserOrThrow(Long userId) {
         return userRepository.findById(userId).orElseThrow(
-            () -> new NotFoundEwmException(String.format("User with id = %d not found.", userId)));
+                () -> new NotFoundEwmException(String.format("User with id = %d not found.", userId)));
     }
 
     private Event getEventByEventIdAndInitiatorIdOrThrow(Long eventId, Long userId) {
         return eventRepository.findByIdAndInitiatorId(eventId, userId)
-            .orElseThrow(() -> new NotFoundEwmException(
-                String.format("Event id = %d, user id = %d not found", eventId, userId)));
+                .orElseThrow(() -> new NotFoundEwmException(
+                        String.format("Event id = %d, user id = %d not found", eventId, userId)));
     }
 
     private Category getCategoryOrThrow(Long categoryId) {
         return categoryRepository.findById(categoryId).orElseThrow(
-            () -> new NotFoundEwmException(String.format("Category with id = %d not found.", categoryId)));
+                () -> new NotFoundEwmException(String.format("Category with id = %d not found.", categoryId)));
     }
 
     private Location getOrSaveLocation(Location location) {
         return locationRepository.findByLatAndLon(location.getLat(), location.getLon())
-            .orElse(locationRepository.save(location));
+                .orElse(locationRepository.save(location));
     }
 
     private void checkTimeEvent(String timeEvent) {
         if (timeEvent != null &&
-            LocalDateTime.parse(timeEvent, TIMESTAMP_FORMATTER).isBefore(LocalDateTime.now().plusHours(2))) {
+                LocalDateTime.parse(timeEvent, TIMESTAMP_FORMATTER).isBefore(LocalDateTime.now().plusHours(2))) {
             throw new ValidationEwmException(
-                "the date and time on which the event is scheduled cannot be earlier than two hours from the current moment."
+                    "the date and time on which the event is scheduled cannot be earlier than two hours from the current moment."
             );
         }
     }
 
     private Map<Long, Long> getConfirmedRequestsPerEvent(List<Event> events) {
         List<Long> eventsIds = events.stream()
-            .map(Event::getId)
-            .collect(Collectors.toList());
+                .map(Event::getId)
+                .collect(Collectors.toList());
         List<Request> confirmedRequests =
-            requestRepository.findAllByEventIdInAndStatusEquals(eventsIds, RequestStatuses.CONFIRMED);
+                requestRepository.findAllByEventIdInAndStatusEquals(eventsIds, RequestStatuses.CONFIRMED);
         return confirmedRequests.stream()
-            .collect(Collectors.groupingBy(req -> req.getEvent().getId(), Collectors.counting()));
+                .collect(Collectors.groupingBy(req -> req.getEvent().getId(), Collectors.counting()));
     }
 
     private void updateEvent(EventUpdateRequestDto eventDto, Event event) {
@@ -364,9 +364,9 @@ public class EventServiceImpl implements EventService {
         Optional.ofNullable(eventDto.getCategory()).map(this::getCategoryOrThrow).ifPresent(event::setCategory);
         Optional.ofNullable(eventDto.getDescription()).ifPresent(event::setDescription);
         Optional.ofNullable(eventDto.getEventDate()).map(date -> LocalDateTime.parse(date, TIMESTAMP_FORMATTER))
-            .ifPresent(event::setEventDate);
+                .ifPresent(event::setEventDate);
         Optional.ofNullable(eventDto.getLocation()).map(LocationMapper::toLocation).map(this::getOrSaveLocation)
-            .ifPresent(event::setLocation);
+                .ifPresent(event::setLocation);
         Optional.ofNullable(eventDto.getPaid()).ifPresent(event::setPaid);
         Optional.ofNullable(eventDto.getParticipantLimit()).ifPresent(event::setParticipantLimit);
         Optional.ofNullable(eventDto.getRequestModeration()).ifPresent(event::setRequestModeration);

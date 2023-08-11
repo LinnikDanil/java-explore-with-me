@@ -47,8 +47,8 @@ public class CategoryIntegrationTest {
         // Create a category and validate response
         HttpEntity<CategoryRequestDto> entity1 = new HttpEntity<>(categoryRequestDtoTest1, headers);
         ResponseEntity<CategoryResponseDto> response1 = restTemplate.exchange(
-            createURLWithPort("/admin/categories"),
-            HttpMethod.POST, entity1, CategoryResponseDto.class);
+                createURLWithPort("/admin/categories"),
+                HttpMethod.POST, entity1, CategoryResponseDto.class);
 
         CategoryResponseDto categoryResponseDto1 = response1.getBody();
         assertNotNull(categoryResponseDto1);
@@ -57,7 +57,7 @@ public class CategoryIntegrationTest {
         // Create another category for testing
         HttpEntity<CategoryRequestDto> entity2 = new HttpEntity<>(categoryRequestDtoTest2, headers);
         restTemplate.exchange(createURLWithPort("/admin/categories"), HttpMethod.POST, entity2,
-            CategoryResponseDto.class);
+                CategoryResponseDto.class);
 
         // Update category using Apache HttpClient
         CloseableHttpClient client = HttpClients.createDefault();
@@ -76,18 +76,18 @@ public class CategoryIntegrationTest {
         // Get categories and validate response
         HttpEntity<String> entity3 = new HttpEntity<>(null, headers);
         ResponseEntity<String> responseGetAll = restTemplate.exchange(createURLWithPort("/categories?from=0&size=10"),
-            HttpMethod.GET, entity3, String.class);
+                HttpMethod.GET, entity3, String.class);
 
         String expectedJson = "[{\"name\":\"Updated Category\"},{\"name\":\"Test Category2\"}]";
         JSONAssert.assertEquals(expectedJson, responseGetAll.getBody(), false);
 
         // Get category by ID and validate response
         ResponseEntity<String> responseGetById =
-            restTemplate.exchange(createURLWithPort("/categories/" + categoryResponseDto1.getId()),
-                HttpMethod.GET, entity3, String.class);
+                restTemplate.exchange(createURLWithPort("/categories/" + categoryResponseDto1.getId()),
+                        HttpMethod.GET, entity3, String.class);
 
         String expectedJsonId =
-            String.format("{\"name\":\"Updated Category\",\"id\":%d}", categoryResponseDto1.getId());
+                String.format("{\"name\":\"Updated Category\",\"id\":%d}", categoryResponseDto1.getId());
         JSONAssert.assertEquals(expectedJsonId, responseGetById.getBody(), false);
 
         // Delete category and validate response

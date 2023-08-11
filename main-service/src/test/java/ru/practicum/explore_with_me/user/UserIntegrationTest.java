@@ -34,15 +34,15 @@ public class UserIntegrationTest {
     @DisplayName("Full user integration test")
     public void testCreateGetAndDeleteUser() throws JSONException {
         UserRequestDto userRequestDtoTest1 = UserRequestDto.builder()
-            .email("test1@email.com")
-            .name("Test User1")
-            .build();
+                .email("test1@email.com")
+                .name("Test User1")
+                .build();
 
         // Create a user and validate response
         HttpEntity<UserRequestDto> entity1 = new HttpEntity<>(userRequestDtoTest1, headers);
         ResponseEntity<UserResponseDto> response1 = restTemplate.exchange(
-            createURLWithPort("/admin/users"),
-            HttpMethod.POST, entity1, UserResponseDto.class);
+                createURLWithPort("/admin/users"),
+                HttpMethod.POST, entity1, UserResponseDto.class);
 
         UserResponseDto userResponseDto1 = response1.getBody();
         assertNotNull(userResponseDto1);
@@ -52,11 +52,11 @@ public class UserIntegrationTest {
         // Get users and validate response
         HttpEntity<String> entity2 = new HttpEntity<>(null, headers);
         ResponseEntity<String> response2 = restTemplate.exchange(
-            createURLWithPort("/admin/users"),
-            HttpMethod.GET, entity2, String.class);
+                createURLWithPort("/admin/users"),
+                HttpMethod.GET, entity2, String.class);
 
         String expectedJson = String.format("[{\"email\":\"test1@email.com\",\"id\":%d,\"name\":\"Test User1\"}]",
-            userResponseDto1.getId());
+                userResponseDto1.getId());
         JSONAssert.assertEquals(expectedJson, response2.getBody(), false);
 
         // Delete user and validate response
@@ -64,8 +64,8 @@ public class UserIntegrationTest {
 
         // Get users after deletion and validate response
         ResponseEntity<String> response3 = restTemplate.exchange(
-            createURLWithPort("/admin/users"),
-            HttpMethod.GET, entity2, String.class);
+                createURLWithPort("/admin/users"),
+                HttpMethod.GET, entity2, String.class);
 
         JSONAssert.assertEquals("[]", response3.getBody(), false);
     }

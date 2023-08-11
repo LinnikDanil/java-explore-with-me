@@ -10,23 +10,23 @@ import ru.practicum.explore_with_me.user.model.User;
 public class UserMapper {
     public static UserResponseDto toUserDto(User user) {
         return UserResponseDto.builder()
-            .email(user.getEmail())
-            .id(user.getId())
-            .name(user.getName())
-            .build();
+                .email(user.getEmail())
+                .id(user.getId())
+                .name(user.getName())
+                .build();
     }
 
     public static User toUser(UserRequestDto userRequestDto) {
         return User.builder()
-            .email(userRequestDto.getEmail())
-            .name(userRequestDto.getName())
-            .build();
+                .email(userRequestDto.getEmail())
+                .name(userRequestDto.getName())
+                .build();
     }
 
     public static UserShortResponseDto toUserShortDto(User user) {
         return UserShortResponseDto.builder()
-            .id(user.getId())
-            .name(user.getName())
-            .build();
+                .id(user.getId())
+                .name(user.getName())
+                .build();
     }
 }

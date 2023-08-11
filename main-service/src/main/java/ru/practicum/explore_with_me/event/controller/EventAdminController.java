@@ -35,8 +35,8 @@ public class EventAdminController {
                                                     @RequestParam(defaultValue = EventPageConstants.PAGE_SIZE)
                                                     @Positive Integer size) {
         log.info(
-            "ADMIN CONTROLLER: GET full events. Users: {}, states: {}, categories: {}, rangeStart: {}, rangeEnd: {}, from = {}, size = {}",
-            users, states, categories, rangeStart, rangeEnd, from, size);
+                "ADMIN CONTROLLER: GET full events. Users: {}, states: {}, categories: {}, rangeStart: {}, rangeEnd: {}, from = {}, size = {}",
+                users, states, categories, rangeStart, rangeEnd, from, size);
         return eventService.getAdminEvents(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 

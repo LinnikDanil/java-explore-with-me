@@ -22,7 +22,7 @@ public class CommentMapper {
                 .id(comment.getId())
                 .text(comment.getText())
                 .author(UserMapper.toUserShortDto(comment.getAuthor()))
-                .event(EventMapper.toEventShortDto(comment.getEvent()))
+                .event(comment.getEvent().getId())
                 .publishedDate(comment.getPublishedDate().format(TIMESTAMP_FORMATTER))
                 .build();
     }

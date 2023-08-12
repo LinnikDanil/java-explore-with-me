@@ -3,6 +3,7 @@ package ru.practicum.explore_with_me.event.mapper;
 import lombok.experimental.UtilityClass;
 import ru.practicum.explore_with_me.category.mapper.CategoryMapper;
 import ru.practicum.explore_with_me.category.model.Category;
+import ru.practicum.explore_with_me.comment.dto.CommentShortResponseDto;
 import ru.practicum.explore_with_me.event.dto.EventCreateRequestDto;
 import ru.practicum.explore_with_me.event.dto.EventFullResponseDto;
 import ru.practicum.explore_with_me.event.dto.EventShortResponseDto;
@@ -14,6 +15,7 @@ import ru.practicum.explore_with_me.user.mapper.UserMapper;
 import ru.practicum.explore_with_me.user.model.User;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static ru.practicum.explore_with_me.utils.EventTimeFormatConstants.TIMESTAMP_FORMATTER;
 
@@ -84,7 +86,7 @@ public class EventMapper {
                 .build();
     }
 
-    public static EventFullResponseDto toEventFullDto(Event event, long confirmedRequests, long views) {
+    public static EventFullResponseDto toEventFullDto(Event event, long confirmedRequests, long views, List<CommentShortResponseDto> comments) {
         return EventFullResponseDto.builder()
                 .annotation(event.getAnnotation())
                 .category(CategoryMapper.toCategoryDto(event.getCategory()))
@@ -102,6 +104,7 @@ public class EventMapper {
                 .title(event.getTitle())
                 .views(views)
                 .publishedOn(event.getPublishedOn() != null ? event.getPublishedOn().format(TIMESTAMP_FORMATTER) : null)
+                .comments(comments)
                 .build();
     }
 }

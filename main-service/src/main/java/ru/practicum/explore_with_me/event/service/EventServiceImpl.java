@@ -11,6 +11,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore_with_me.category.model.Category;
 import ru.practicum.explore_with_me.category.repository.CategoryRepository;
+import ru.practicum.explore_with_me.comment.dto.CommentShortResponseDto;
+import ru.practicum.explore_with_me.comment.mapper.CommentMapper;
+import ru.practicum.explore_with_me.comment.model.Comment;
+import ru.practicum.explore_with_me.comment.model.CommentState;
+import ru.practicum.explore_with_me.comment.repository.CommentRepository;
 import ru.practicum.explore_with_me.error.exception.ForbiddenActionEwmException;
 import ru.practicum.explore_with_me.error.exception.NotFoundEwmException;
 import ru.practicum.explore_with_me.error.exception.ValidationEwmException;
@@ -50,6 +55,7 @@ public class EventServiceImpl implements EventService {
     private final LocationRepository locationRepository;
     private final RequestRepository requestRepository;
     private final EventStatsClient eventStatsClient;
+    private final CommentRepository commentRepository;
 
     @Override
     public List<EventShortResponseDto> getUserEvents(Long userId, Integer from, Integer size) {
@@ -240,8 +246,12 @@ public class EventServiceImpl implements EventService {
 
         long confirmedRequests = requestRepository.countAllByEventIdAndStatusEquals(eventId, RequestStatuses.CONFIRMED);
         long views = eventStatsClient.getViews(eventId);
+        List<CommentShortResponseDto> comments = commentRepository.findAllByEventIdAndStateEquals(eventId, CommentState.PUBLISHED)
+                .stream()
+                .map(CommentMapper::toCommentShortDto)
+                .collect(Collectors.toList());
 
-        return EventMapper.toEventFullDto(event, confirmedRequests, views);
+        return EventMapper.toEventFullDto(event, confirmedRequests, views, comments);
     }
 
     @Override
@@ -275,12 +285,14 @@ public class EventServiceImpl implements EventService {
 
         Map<Long, Long> confirmedRequestsPerEvent = getConfirmedRequestsPerEvent(events);
         Map<Long, Long> viewsPerEvent = eventStatsClient.getViewsPerEvent(events);
+        Map<Long, List<CommentShortResponseDto>> comments = getCommentsPerEvent(events);
 
         return events.stream()
                 .map(event -> EventMapper.toEventFullDto(
                         event,
                         confirmedRequestsPerEvent.getOrDefault(event.getId(), 0L),
-                        viewsPerEvent.getOrDefault(event.getId(), 0L)))
+                        viewsPerEvent.getOrDefault(event.getId(), 0L),
+                        comments.getOrDefault(event.getId(), Collections.emptyList())))
                 .collect(Collectors.toList());
     }
 
@@ -350,13 +362,25 @@ public class EventServiceImpl implements EventService {
     }
 
     private Map<Long, Long> getConfirmedRequestsPerEvent(List<Event> events) {
-        List<Long> eventsIds = events.stream()
-                .map(Event::getId)
-                .collect(Collectors.toList());
+        List<Long> eventsIds = getEventsIds(events);
         List<Request> confirmedRequests =
                 requestRepository.findAllByEventIdInAndStatusEquals(eventsIds, RequestStatuses.CONFIRMED);
         return confirmedRequests.stream()
                 .collect(Collectors.groupingBy(req -> req.getEvent().getId(), Collectors.counting()));
+    }
+
+    private Map<Long, List<CommentShortResponseDto>> getCommentsPerEvent(List<Event> events) {
+        List<Long> eventsIds = getEventsIds(events);
+        List<Comment> comments = commentRepository.findAllByEventIdInAndStateEquals(eventsIds, CommentState.PUBLISHED);
+        return comments.stream()
+                .map(CommentMapper::toCommentShortDto)
+                .collect(Collectors.groupingBy(CommentShortResponseDto::getEvent));
+    }
+
+    private List<Long> getEventsIds(List<Event> events) {
+        return events.stream()
+                .map(Event::getId)
+                .collect(Collectors.toList());
     }
 
     private void updateEvent(EventUpdateRequestDto eventDto, Event event) {

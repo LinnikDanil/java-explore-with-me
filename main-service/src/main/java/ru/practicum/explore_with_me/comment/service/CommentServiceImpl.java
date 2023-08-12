@@ -150,9 +150,8 @@ public class CommentServiceImpl implements CommentService {
 
     private Comment getCommentAndValidationData(long userId, long eventId, long commentId) {
         getUserOrThrow(userId);
-        Event event = getEventOrThrow(eventId);
+        getEventOrThrow(eventId);
         Comment comment = getCommentWithStatePendingOrThrow(commentId);
-        checkUserNotInitiatorEvent(event, userId);
         checkUserIsAuthorComment(userId, comment);
         return comment;
     }

@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore_with_me.comment.dto.*;
 import ru.practicum.explore_with_me.comment.mapper.CommentMapper;
 import ru.practicum.explore_with_me.comment.mapper.ReportMapper;
@@ -45,6 +46,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public CommentFullResponseDto createComment(CommentRequestDto commentRequestDto, Long userId, Long eventId) {
         log.info("COMMENT SERVICE: CREATE comment text = {}, userId = {}, eventId = {}", commentRequestDto.getText(), userId, eventId);
 
@@ -57,6 +59,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public CommentFullResponseDto updateComment(CommentRequestDto commentRequestDto, Long userId, Long eventId,
                                                 Long commentId) {
         log.info("COMMENT SERVICE: UPDATE comment text = {}, userId = {}, eventId = {}", commentRequestDto.getText(), userId, eventId);
@@ -68,6 +71,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public void deleteCommentByUser(Long userId, Long eventId, Long commentId) {
         log.info("COMMENT SERVICE: DELETE comment id = {}, userId = {}, eventId = {}", commentId, userId, eventId);
 
@@ -76,6 +80,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public ReportResponseDto createCommentReport(ReportRequestDto reportRequestDto, Long userId, Long eventId,
                                                  Long commentId) {
         log.info("COMMENT SERVICE: CREATE report text = {}, to comment id = {}, userId = {}, eventId = {}",
@@ -117,6 +122,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public CommentFullResponseDto updateCommentStatus(Boolean isPublish, Long commentId) {
         log.info("COMMENT SERVICE: UPDATE comment id = {} status isPublish = {}", commentId, isPublish);
 
@@ -133,6 +139,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public void deleteCommentByAdmin(Long commentId) {
         log.info("COMMENT SERVICE: DELETE comment id = {} by admin", commentId);
 

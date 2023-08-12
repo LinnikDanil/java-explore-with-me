@@ -1,5 +1,7 @@
 # ExploreWithMe - Дипломный проект
 
+[PullRequest](https://github.com/LinnikDanil/java-explore-with-me/pull/5)
+
 ## Описание проекта:
 
 ExploreWithMe — это приложение-афиша, которое позволяет пользователям делиться информацией о различных событиях и искать

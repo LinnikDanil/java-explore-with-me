@@ -40,11 +40,11 @@ public class CompilationServiceImpl implements CompilationService {
         Pageable pageable = PageRequest.of(from / size, size);
 
         List<Compilation> compilations = pinned != null ? compilationRepository.findAllByPinnedEquals(pinned, pageable)
-            : compilationRepository.findAll(pageable).getContent();
+                : compilationRepository.findAll(pageable).getContent();
 
         Set<Event> events = compilations.stream()
-            .flatMap(compilation -> compilation.getEvents().stream())
-            .collect(Collectors.toSet());
+                .flatMap(compilation -> compilation.getEvents().stream())
+                .collect(Collectors.toSet());
         List<EventShortResponseDto> eventsDto = getEventShortDto(events);
 
         return CompilationMapper.toCompilationsDto(compilations, eventsDto);
@@ -68,7 +68,7 @@ public class CompilationServiceImpl implements CompilationService {
             events.addAll(eventRepository.findAllById(compilationDto.getEvents()));
         }
         return CompilationMapper.toCompilationDto(
-            compilationRepository.save(CompilationMapper.toCompilation(compilationDto, events)));
+                compilationRepository.save(CompilationMapper.toCompilation(compilationDto, events)));
     }
 
     @Override
@@ -102,23 +102,23 @@ public class CompilationServiceImpl implements CompilationService {
         Map<Long, Long> viewsPerEvent = eventStatsClient.getViewsPerEvent(new ArrayList<>(events));
 
         List<Long> eventsIds = events.stream()
-            .map(Event::getId)
-            .collect(Collectors.toList());
+                .map(Event::getId)
+                .collect(Collectors.toList());
         Map<Long, Long> confirmedRequestsPerEvent =
-            requestRepository.findAllByEventIdInAndStatusEquals(eventsIds, RequestStatuses.CONFIRMED)
-                .stream()
-                .collect(Collectors.groupingBy(req -> req.getEvent().getId(), Collectors.counting()));
+                requestRepository.findAllByEventIdInAndStatusEquals(eventsIds, RequestStatuses.CONFIRMED)
+                        .stream()
+                        .collect(Collectors.groupingBy(req -> req.getEvent().getId(), Collectors.counting()));
 
         return events.stream()
-            .map(event -> EventMapper.toEventShortDto(
-                event,
-                confirmedRequestsPerEvent.getOrDefault(event.getId(), 0L),
-                viewsPerEvent.getOrDefault(event.getId(), 0L)))
-            .collect(Collectors.toList());
+                .map(event -> EventMapper.toEventShortDto(
+                        event,
+                        confirmedRequestsPerEvent.getOrDefault(event.getId(), 0L),
+                        viewsPerEvent.getOrDefault(event.getId(), 0L)))
+                .collect(Collectors.toList());
     }
 
     private Compilation getCompilationOrThrow(Long compId) {
         return compilationRepository.findById(compId).orElseThrow(
-            () -> new NotFoundEwmException(String.format("Compilation with id = %d not found.", compId)));
+                () -> new NotFoundEwmException(String.format("Compilation with id = %d not found.", compId)));
     }
 }

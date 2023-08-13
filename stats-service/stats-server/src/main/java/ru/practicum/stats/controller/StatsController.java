@@ -31,10 +31,10 @@ public class StatsController {
     @GetMapping("/stats")
     @ResponseStatus(HttpStatus.OK)
     public List<StatsDto> getStats(
-        @RequestParam @DateTimeFormat(pattern = TimeFormatConstants.TIMESTAMP_FORMAT) LocalDateTime start,
-        @RequestParam @DateTimeFormat(pattern = TimeFormatConstants.TIMESTAMP_FORMAT) LocalDateTime end,
-        @RequestParam(required = false) List<String> uris,
-        @RequestParam(defaultValue = "false") boolean unique
+            @RequestParam @DateTimeFormat(pattern = TimeFormatConstants.TIMESTAMP_FORMAT) LocalDateTime start,
+            @RequestParam @DateTimeFormat(pattern = TimeFormatConstants.TIMESTAMP_FORMAT) LocalDateTime end,
+            @RequestParam(required = false) List<String> uris,
+            @RequestParam(defaultValue = "false") boolean unique
     ) {
         if (start.isAfter(end)) {
             throw new ValidationRequestException("Start can't be later than the end.");

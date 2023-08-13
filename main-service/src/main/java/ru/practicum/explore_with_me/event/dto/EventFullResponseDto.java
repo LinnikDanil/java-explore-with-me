@@ -3,8 +3,11 @@ package ru.practicum.explore_with_me.event.dto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.explore_with_me.category.dto.CategoryResponseDto;
+import ru.practicum.explore_with_me.comment.dto.CommentShortResponseDto;
 import ru.practicum.explore_with_me.location.dto.LocationDto;
 import ru.practicum.explore_with_me.user.dto.UserShortResponseDto;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -28,4 +31,5 @@ public class EventFullResponseDto {
     String state; //Список состояний жизненного цикла события
     String title; //Заголовок
     Long views; //Просмотры
+    List<CommentShortResponseDto> comments;
 }

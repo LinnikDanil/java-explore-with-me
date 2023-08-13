@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.explore_with_me.category.controller.CategoryAdminController;
 import ru.practicum.explore_with_me.category.controller.CategoryPublicController;
+import ru.practicum.explore_with_me.comment.controller.CommentAdminController;
+import ru.practicum.explore_with_me.comment.controller.CommentPrivateController;
+import ru.practicum.explore_with_me.comment.controller.CommentPublicController;
 import ru.practicum.explore_with_me.compilation.controller.CompilationAdminController;
 import ru.practicum.explore_with_me.compilation.controller.CompilationPublicController;
 import ru.practicum.explore_with_me.error.exception.*;
@@ -21,15 +24,18 @@ import ru.practicum.explore_with_me.request.controller.RequestPrivateController;
 import ru.practicum.explore_with_me.user.controller.UserAdminController;
 
 @RestControllerAdvice(assignableTypes = {
-    CategoryPublicController.class,
-    CategoryAdminController.class,
-    CompilationAdminController.class,
-    CompilationPublicController.class,
-    EventAdminController.class,
-    EventPublicController.class,
-    EventPrivateController.class,
-    RequestPrivateController.class,
-    UserAdminController.class
+        CategoryPublicController.class,
+        CategoryAdminController.class,
+        CompilationAdminController.class,
+        CompilationPublicController.class,
+        EventAdminController.class,
+        EventPublicController.class,
+        EventPrivateController.class,
+        RequestPrivateController.class,
+        UserAdminController.class,
+        CommentAdminController.class,
+        CommentPrivateController.class,
+        CommentPublicController.class
 })
 @Slf4j
 public class ErrorHandler {
@@ -85,7 +91,7 @@ public class ErrorHandler {
     @ExceptionHandler(MissingServletRequestParameterException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleMissingServletRequestParameterException(
-        final MissingServletRequestParameterException e) {
+            final MissingServletRequestParameterException e) {
         log.error("Received status 400 Bad Request {}", e.getMessage(), e);
         return new ErrorResponse(e.getMessage());
     }

@@ -20,38 +20,38 @@ public class CompilationMapper {
     public static List<CompilationResponseDto> toCompilationsDto(List<Compilation> compilations,
                                                                  List<EventShortResponseDto> eventsDto) {
         Map<Long, EventShortResponseDto> eventShortDtoMap = eventsDto.stream()
-            .collect(Collectors.toMap(EventShortResponseDto::getId, Function.identity()));
+                .collect(Collectors.toMap(EventShortResponseDto::getId, Function.identity()));
 
         return compilations.stream()
-            .map(compilation -> CompilationResponseDto.builder()
-                .title(compilation.getTitle())
-                .id(compilation.getId())
-                .pinned(compilation.getPinned())
-                .events(compilation.getEvents().stream()
-                    .map(event -> eventShortDtoMap.get(event.getId()))
-                    .collect(Collectors.toList()))
-                .build())
-            .collect(Collectors.toList());
+                .map(compilation -> CompilationResponseDto.builder()
+                        .title(compilation.getTitle())
+                        .id(compilation.getId())
+                        .pinned(compilation.getPinned())
+                        .events(compilation.getEvents().stream()
+                                .map(event -> eventShortDtoMap.get(event.getId()))
+                                .collect(Collectors.toList()))
+                        .build())
+                .collect(Collectors.toList());
     }
 
 
     public static CompilationResponseDto toCompilationDto(Compilation compilation) {
         return CompilationResponseDto.builder()
-            .title(compilation.getTitle())
-            .id(compilation.getId())
-            .pinned(compilation.getPinned())
-            .events(compilation.getEvents().stream()
-                .map(EventMapper::toEventShortDto)
-                .collect(Collectors.toList()))
-            .build();
+                .title(compilation.getTitle())
+                .id(compilation.getId())
+                .pinned(compilation.getPinned())
+                .events(compilation.getEvents().stream()
+                        .map(EventMapper::toEventShortDto)
+                        .collect(Collectors.toList()))
+                .build();
     }
 
     public static Compilation toCompilation(CompilationCreateRequestDto compilationDto, Set<Event> events) {
 
         return Compilation.builder()
-            .title(compilationDto.getTitle())
-            .pinned(compilationDto.getPinned())
-            .events(events)
-            .build();
+                .title(compilationDto.getTitle())
+                .pinned(compilationDto.getPinned())
+                .events(events)
+                .build();
     }
 }

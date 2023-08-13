@@ -38,11 +38,11 @@ public class EventPublicController {
                                                       @Positive Integer size,
                                                       HttpServletRequest request) {
         log.info(
-            "PUBLIC CONTROLLER: GET short events. text: {}, categories: {}, paid = {}, rangeStart: {}, rangeEnd: {}," +
-                "onlyAvailable = {}, sort = {}, from = {}, size = {}, request = {}",
-            text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, request);
+                "PUBLIC CONTROLLER: GET short events. text: {}, categories: {}, paid = {}, rangeStart: {}, rangeEnd: {}," +
+                        "onlyAvailable = {}, sort = {}, from = {}, size = {}, request = {}",
+                text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, request);
         return eventService.getPublicEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from,
-            size, request);
+                size, request);
     }
 
     @GetMapping("/{eventId}")

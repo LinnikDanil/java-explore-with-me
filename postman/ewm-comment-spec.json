@@ -1,0 +1,735 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Comments API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Private",
+      "description": "Действия для приватных комментариев"
+    },
+    {
+      "name": "Admin",
+      "description": "Действия для администрирования комментариев"
+    },
+    {
+      "name": "Public",
+      "description": "Действия для публичных комментариев"
+    }
+  ],
+  "paths": {
+    "/users/{userId}/events/{eventId}/comments": {
+      "post": {
+        "tags": [
+          "Private"
+        ],
+        "summary": "Публикация комментария",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID пользователя, который оставляет комментарий",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "eventId",
+            "in": "path",
+            "description": "ID события, на который оставлен комментарий",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Тело комментария",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommentRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Успешное выполнение",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentFullResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Пользователь или событие не найдены"
+          },
+          "409": {
+            "description": "Конфликт данных (например, уже существующий комментарий)"
+          }
+        }
+      }
+    },
+    "/users/{userId}/events/{eventId}/comments/{commentId}": {
+      "patch": {
+        "tags": [
+          "Private"
+        ],
+        "summary": "Редактирование комментария",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID пользователя, который оставлял комментарий",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "eventId",
+            "in": "path",
+            "description": "ID события, на который оставлен комментарий",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "commentId",
+            "in": "path",
+            "description": "ID комментария для редактирования",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Тело комментария для редактирования",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommentRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Успешное выполнение",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentFullResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Пользователь, событие или комментарий не найдены"
+          },
+          "409": {
+            "description": "Конфликт данных (например, комментарий уже изменен)"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Private"
+        ],
+        "summary": "Удаление комментария до публикации",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID пользователя, который оставлял комментарий",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "eventId",
+            "in": "path",
+            "description": "ID события, на который оставлен комментарий",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "commentId",
+            "in": "path",
+            "description": "ID комментария для удаления",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Комментарий успешно удален"
+          },
+          "404": {
+            "description": "Пользователь, событие или комментарий не найдены"
+          },
+          "409": {
+            "description": "Конфликт данных (например, комментарий уже был удален)"
+          }
+        }
+      }
+    },
+    "/users/{userId}/events/{eventId}/comments/{commentId}/reports": {
+      "post": {
+        "tags": [
+          "Private"
+        ],
+        "summary": "Создание жалобы на комментарий",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID владельца события, который подаёт жалобу",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "eventId",
+            "in": "path",
+            "description": "ID события, на который оставлен комментарий",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "commentId",
+            "in": "path",
+            "description": "ID комментария, на который подается жалоба",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Тело жалобы",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReportRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Успешное выполнение",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Пользователь, событие или комментарий не найдены"
+          },
+          "409": {
+            "description": "Конфликт данных (например, уже существующая жалоба)"
+          }
+        }
+      }
+    },
+    "/comments/user/{userId}": {
+      "get": {
+        "tags": [
+          "Public"
+        ],
+        "summary": "Получение списка всех опубликованных комментариев, которые оставили пользователю на все его события",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID пользователя, у которого выводятся все комментарии",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Начало вывода",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "Размер страницы для вывода",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешное выполнение",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommentShortResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Пользователь не найден"
+          }
+        }
+      }
+    },
+    "/comments": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Получение списка всех комментариев с параметром stateAction",
+        "parameters": [
+          {
+            "name": "stateAction",
+            "in": "query",
+            "description": "Статус комментария: PENDING, PUBLISHED, REJECTED",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PENDING",
+                "PUBLISHED",
+                "REJECTED"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешное выполнение",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommentFullResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/comments/{commentId}": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Получение комментария по Id",
+        "parameters": [
+          {
+            "name": "commentId",
+            "in": "path",
+            "description": "ID комментария",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешное выполнение",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentFullResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Комментарий не найден"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Одобрение/отклонение комментария",
+        "parameters": [
+          {
+            "name": "commentId",
+            "in": "path",
+            "description": "ID комментария",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "isPublish": {
+                    "type": "boolean",
+                    "description": "Если true, то опубликовать, иначе отклонить"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Успешное выполнение",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentFullResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Комментарий не найден"
+          },
+          "409": {
+            "description": "Конфликт статусов"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Удаление комментария",
+        "parameters": [
+          {
+            "name": "commentId",
+            "in": "path",
+            "description": "ID комментария",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Успешное выполнение"
+          },
+          "404": {
+            "description": "Комментарий не найден"
+          }
+        }
+      }
+    },
+    "/comments/reports": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Получение списка всех жалоб",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Начало вывода",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "Размер страницы для жалоб",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успешное выполнение",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReportResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CommentRequestDto": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "Текст комментария",
+            "minLength": 30,
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "text"
+        ]
+      },
+      "CommentFullResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "ID комментария"
+          },
+          "text": {
+            "type": "string",
+            "description": "Текст комментария"
+          },
+          "author": {
+            "$ref": "#/components/schemas/UserShortResponseDto"
+          },
+          "event": {
+            "$ref": "#/components/schemas/EventShortResponseDto"
+          },
+          "state": {
+            "type": "string",
+            "description": "Статус комментария"
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Дата создания комментария"
+          },
+          "publishedDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Дата публикации комментария"
+          }
+        },
+        "required": [
+          "id",
+          "text",
+          "author",
+          "event",
+          "state",
+          "createdDate",
+          "publishedDate"
+        ]
+      },
+      "CommentShortResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "ID комментария"
+          },
+          "text": {
+            "type": "string",
+            "description": "Текст комментария"
+          },
+          "author": {
+            "$ref": "#/components/schemas/UserShortResponseDto"
+          },
+          "event": {
+            "type": "integer",
+            "description": "ID события"
+          },
+          "publishedDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Дата публикации комментария"
+          }
+        },
+        "required": [
+          "id",
+          "text",
+          "author",
+          "event",
+          "publishedDate"
+        ]
+      },
+      "ReportRequestDto": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "Текст жалобы",
+            "minLength": 30,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "text"
+        ]
+      },
+      "ReportResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "ID жалобы"
+          },
+          "text": {
+            "type": "string",
+            "description": "Текст жалобы"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/UserShortResponseDto"
+          },
+          "event": {
+            "$ref": "#/components/schemas/EventShortResponseDto"
+          },
+          "comment": {
+            "$ref": "#/components/schemas/CommentFullResponseDto"
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Дата создания жалобы"
+          }
+        },
+        "required": [
+          "id",
+          "text",
+          "owner",
+          "event",
+          "comment",
+          "createdDate"
+        ]
+      },
+      "EventShortResponseDto": {
+        "type": "object",
+        "properties": {
+          "annotation": {
+            "type": "string",
+            "description": "Краткое описание события"
+          },
+          "category": {
+            "$ref": "#/components/schemas/CategoryResponseDto"
+          },
+          "confirmedRequests": {
+            "type": "integer",
+            "description": "Количество одобренных заявок на участие"
+          },
+          "eventDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Дата и время события"
+          },
+          "id": {
+            "type": "integer",
+            "description": "ID события"
+          },
+          "initiator": {
+            "$ref": "#/components/schemas/UserShortResponseDto"
+          },
+          "paid": {
+            "type": "boolean",
+            "description": "Платное ли участие в событии"
+          },
+          "title": {
+            "type": "string",
+            "description": "Заголовок события"
+          },
+          "views": {
+            "type": "integer",
+            "description": "Количество просмотров события"
+          }
+        },
+        "required": [
+          "annotation",
+          "category",
+          "confirmedRequests",
+          "eventDate",
+          "id",
+          "initiator",
+          "paid",
+          "title",
+          "views"
+        ]
+      },
+      "CategoryResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "ID категории"
+          },
+          "name": {
+            "type": "string",
+            "description": "Имя категории"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "UserShortResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "ID пользователя"
+          },
+          "name": {
+            "type": "string",
+            "description": "Имя пользователя"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      }
+    }
+  }
+}

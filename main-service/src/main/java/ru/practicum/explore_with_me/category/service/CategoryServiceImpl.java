@@ -33,12 +33,12 @@ public class CategoryServiceImpl implements CategoryService {
 
         String updatedName = categoryRequestDto.getName();
         categoryRepository.findByName(updatedName)
-            .ifPresent(e -> {
-                throw new AlreadyExistEwmException(String.format("A category named %s already exists", updatedName));
-            });
+                .ifPresent(e -> {
+                    throw new AlreadyExistEwmException(String.format("A category named %s already exists", updatedName));
+                });
 
         CategoryResponseDto categoryResponseDto = CategoryMapper.toCategoryDto(
-            categoryRepository.save(CategoryMapper.toCategory(categoryRequestDto))
+                categoryRepository.save(CategoryMapper.toCategory(categoryRequestDto))
         );
 
         log.info("categoryResponseDto: {}", categoryResponseDto);
@@ -51,19 +51,19 @@ public class CategoryServiceImpl implements CategoryService {
         log.info("CATEGORY SERVICE: UPDATE category: {}, id = {}", categoryRequestDto, catId);
 
         Category oldCategory = categoryRepository.findById(catId).orElseThrow(() ->
-            new NotFoundEwmException(String.format("Category with id = %d not found", catId)));
+                new NotFoundEwmException(String.format("Category with id = %d not found", catId)));
 
         String updatedName = categoryRequestDto.getName();
         if (!oldCategory.getName().equals(updatedName)) {
             categoryRepository.findByName(updatedName)
-                .ifPresent(e -> {
-                    throw new AlreadyExistEwmException(
-                        String.format("A category named %s already exists", updatedName));
-                });
+                    .ifPresent(e -> {
+                        throw new AlreadyExistEwmException(
+                                String.format("A category named %s already exists", updatedName));
+                    });
         }
 
         return CategoryMapper.toCategoryDto(
-            categoryRepository.save(CategoryMapper.toCategory(categoryRequestDto, catId)));
+                categoryRepository.save(CategoryMapper.toCategory(categoryRequestDto, catId)));
     }
 
 
@@ -73,7 +73,7 @@ public class CategoryServiceImpl implements CategoryService {
         log.info("CATEGORY SERVICE: DELETE category id = {}", catId);
 
         categoryRepository.findById(catId).orElseThrow(() ->
-            new NotFoundEwmException(String.format("Category with id = %d not found", catId)));
+                new NotFoundEwmException(String.format("Category with id = %d not found", catId)));
         eventRepository.findFirstByCategoryId(catId).ifPresent(event -> {
             throw new ForbiddenActionEwmException(String.format("Category with id = %d is used for the event", catId));
         });
@@ -88,8 +88,8 @@ public class CategoryServiceImpl implements CategoryService {
         Pageable pageable = PageRequest.of(from / size, size);
 
         return categoryRepository.findAll(pageable).stream()
-            .map(CategoryMapper::toCategoryDto)
-            .collect(Collectors.toList());
+                .map(CategoryMapper::toCategoryDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -97,7 +97,7 @@ public class CategoryServiceImpl implements CategoryService {
         log.info("CATEGORY SERVICE: GET category id = {}", catId);
 
         return CategoryMapper.toCategoryDto(
-            categoryRepository.findById(catId).orElseThrow(() ->
-                new NotFoundEwmException(String.format("Category with id = %d not found", catId))));
+                categoryRepository.findById(catId).orElseThrow(() ->
+                        new NotFoundEwmException(String.format("Category with id = %d not found", catId))));
     }
 }

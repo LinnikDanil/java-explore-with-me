@@ -36,8 +36,8 @@ public class RequestServiceImpl implements RequestService {
         getUserOrThrow(userId);
 
         return requestRepository.findAllByRequesterId(userId).stream()
-            .map(RequestMapper::toParticipationRequestDto)
-            .collect(Collectors.toList());
+                .map(RequestMapper::toParticipationRequestDto)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -48,27 +48,27 @@ public class RequestServiceImpl implements RequestService {
         User requester = getUserOrThrow(userId);
 
         Event event = eventRepository.findById(eventId).orElseThrow(
-            () -> new NotFoundEwmException(String.format("Event with id = %d not found.", eventId)));
+                () -> new NotFoundEwmException(String.format("Event with id = %d not found.", eventId)));
 
         requestRepository.findByRequesterIdAndEventId(userId, eventId)
-            .ifPresent(e -> {
-                throw new AlreadyExistEwmException(
-                    String.format("Request for event id = %d and user id = %d already exists", eventId, userId));
-            });
+                .ifPresent(e -> {
+                    throw new AlreadyExistEwmException(
+                            String.format("Request for event id = %d and user id = %d already exists", eventId, userId));
+                });
 
         validateEvent(userId, eventId, event);
 
         long currentParticipants =
-            requestRepository.countAllByEventIdAndStatusEquals(eventId, RequestStatuses.CONFIRMED);
+                requestRepository.countAllByEventIdAndStatusEquals(eventId, RequestStatuses.CONFIRMED);
         if (event.getParticipantLimit() != 0 && currentParticipants >= event.getParticipantLimit()) {
             throw new ForbiddenActionEwmException(
-                String.format("Participant limit reached for event id = %d", eventId));
+                    String.format("Participant limit reached for event id = %d", eventId));
         }
         RequestStatuses status = (event.getRequestModeration() && event.getParticipantLimit() != 0)
-            ? RequestStatuses.PENDING : RequestStatuses.CONFIRMED;
+                ? RequestStatuses.PENDING : RequestStatuses.CONFIRMED;
 
         return RequestMapper.toParticipationRequestDto(requestRepository.save(
-            RequestMapper.toRequest(LocalDateTime.now(), event, requester, status)));
+                RequestMapper.toRequest(LocalDateTime.now(), event, requester, status)));
     }
 
     @Transactional
@@ -78,7 +78,7 @@ public class RequestServiceImpl implements RequestService {
 
         getUserOrThrow(userId);
         Request request = requestRepository.findById(requestId).orElseThrow(
-            () -> new NotFoundEwmException(String.format("Request with id = %d not found.", requestId)));
+                () -> new NotFoundEwmException(String.format("Request with id = %d not found.", requestId)));
         request.setStatus(RequestStatuses.CANCELED);
 
         return RequestMapper.toParticipationRequestDto(requestRepository.save(request));
@@ -86,18 +86,18 @@ public class RequestServiceImpl implements RequestService {
 
     private User getUserOrThrow(Long userId) {
         return userRepository.findById(userId).orElseThrow(
-            () -> new NotFoundEwmException(String.format("User with id = %d not found.", userId)));
+                () -> new NotFoundEwmException(String.format("User with id = %d not found.", userId)));
     }
 
     private void validateEvent(Long userId, Long eventId, Event event) {
         if (userId.equals(event.getInitiator().getId())) {
             throw new ForbiddenActionEwmException(
-                String.format("Owner id = %d cannot submit a request to participate in their event id = %d", userId,
-                    eventId));
+                    String.format("Owner id = %d cannot submit a request to participate in their event id = %d", userId,
+                            eventId));
         }
         if (!event.getState().equals(EventState.PUBLISHED)) {
             throw new ForbiddenActionEwmException(
-                String.format("User id = %d can't participate in an unpublished event id = %d", userId, eventId));
+                    String.format("User id = %d can't participate in an unpublished event id = %d", userId, eventId));
         }
     }
 }

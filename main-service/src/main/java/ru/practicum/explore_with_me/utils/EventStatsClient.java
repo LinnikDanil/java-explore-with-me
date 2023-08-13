@@ -36,20 +36,20 @@ public class EventStatsClient {
     public void addHit(HttpServletRequest request) {
         log.info("EVENT CLIENT: Send request: uri = {}, ip = {}", request.getRequestURI(), request.getRemoteAddr());
         statsClient.hit(new HitDto(appName, request.getRequestURI(), request.getRemoteAddr(),
-            LocalDateTime.now().format(TIMESTAMP_FORMATTER)));
+                LocalDateTime.now().format(TIMESTAMP_FORMATTER)));
     }
 
     public Map<Long, Long> getViewsPerEvent(List<Event> events) {
         List<String> eventUris = events.stream()
-            .map(event -> "/events/" + event.getId())
-            .collect(Collectors.toList());
+                .map(event -> "/events/" + event.getId())
+                .collect(Collectors.toList());
         log.info("EVENT CLIENT: Get stats by events: {}", events);
 
         List<StatsDto> stats = getStatsDtoList(eventUris);
         return stats.stream()
-            .filter(s -> s.getUri().startsWith("/events/"))
-            .collect(Collectors.groupingBy(s -> Long.valueOf(s.getUri().substring("/events/".length())),
-                Collectors.counting()));
+                .filter(s -> s.getUri().startsWith("/events/"))
+                .collect(Collectors.groupingBy(s -> Long.valueOf(s.getUri().substring("/events/".length())),
+                        Collectors.counting()));
     }
 
     public long getViews(long eventId) {
@@ -60,16 +60,16 @@ public class EventStatsClient {
 
     private List<StatsDto> getStatsDtoList(List<String> uriList) {
         ResponseEntity<Object> responseEntity = statsClient.getStats(
-            LocalDateTime.now().minusYears(100),
-            LocalDateTime.now(),
-            uriList,
-            true);
+                LocalDateTime.now().minusYears(100),
+                LocalDateTime.now(),
+                uriList,
+                true);
 
         if (responseEntity != null && responseEntity.getStatusCode().is2xxSuccessful()) {
             try {
                 return responseEntity.hasBody() ? Arrays.asList(
-                    mapper.readValue(mapper.writeValueAsString(responseEntity.getBody()), StatsDto[].class)) :
-                    Collections.emptyList();
+                        mapper.readValue(mapper.writeValueAsString(responseEntity.getBody()), StatsDto[].class)) :
+                        Collections.emptyList();
             } catch (IOException exception) {
                 throw new ClassCastException(exception.getMessage());
             }

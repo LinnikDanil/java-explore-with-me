@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = StatsController.class)
 class StatsControllerTest {
     private final HitDto hitDtoTest = HitDto.builder().app("appHit").uri("uriHit").ip("Hit")
-        .timestamp(LocalDateTime.now().format(TimeFormatConstants.TIMESTAMP_FORMATTER)).build();
+            .timestamp(LocalDateTime.now().format(TimeFormatConstants.TIMESTAMP_FORMATTER)).build();
     private final StatsDto statsDto = new StatsDto("app", "uri", 5L);
     @MockBean
     private StatsService statsService;
@@ -46,14 +46,14 @@ class StatsControllerTest {
         when(statsService.hit(Mockito.any(HitDto.class))).thenReturn(hitDtoTest);
 
         mvc.perform(post("/hit")
-                .content(objectMapper.writeValueAsString(hitDtoTest))
-                .characterEncoding(StandardCharsets.UTF_8)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-            ).andExpect(status().isCreated())
-            .andExpect(jsonPath("$.app", is(hitDtoTest.getApp())))
-            .andExpect(jsonPath("$.uri", is(hitDtoTest.getUri())))
-            .andExpect(jsonPath("$.ip", is(hitDtoTest.getIp())));
+                        .content(objectMapper.writeValueAsString(hitDtoTest))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                ).andExpect(status().isCreated())
+                .andExpect(jsonPath("$.app", is(hitDtoTest.getApp())))
+                .andExpect(jsonPath("$.uri", is(hitDtoTest.getUri())))
+                .andExpect(jsonPath("$.ip", is(hitDtoTest.getIp())));
     }
 
     @Test
@@ -63,14 +63,14 @@ class StatsControllerTest {
         when(statsService.getStats(any(), any(), any(), anyBoolean())).thenReturn(stats);
 
         mvc.perform(get("/stats")
-                .param("start", "2023-07-20 11:39:31")
-                .param("end", "2023-07-20 21:39:31")
-                .param("unique", "false")
-                .accept(MediaType.APPLICATION_JSON)
-            ).andExpect(status().isOk())
-            .andExpect(jsonPath("$[0].app", is(stats.get(0).getApp())))
-            .andExpect(jsonPath("$[0].uri", is(stats.get(0).getUri())))
-            .andExpect(jsonPath("$[0].hits", is(stats.get(0).getHits()), Long.class));
+                        .param("start", "2023-07-20 11:39:31")
+                        .param("end", "2023-07-20 21:39:31")
+                        .param("unique", "false")
+                        .accept(MediaType.APPLICATION_JSON)
+                ).andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].app", is(stats.get(0).getApp())))
+                .andExpect(jsonPath("$[0].uri", is(stats.get(0).getUri())))
+                .andExpect(jsonPath("$[0].hits", is(stats.get(0).getHits()), Long.class));
     }
 
     @Test
@@ -80,14 +80,14 @@ class StatsControllerTest {
         String end = "2023-07-20 21:39:31";
 
         when(statsService.getStats(any(), any(), any(), anyBoolean())).thenThrow(
-            new ValidationRequestException("Start can't be later than the end."));
+                new ValidationRequestException("Start can't be later than the end."));
 
         mvc.perform(get("/stats")
-                .param("start", start)
-                .param("end", end)
-                .param("unique", "false")
-                .accept(MediaType.APPLICATION_JSON)
-            ).andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.error", is("Start can't be later than the end.")));
+                        .param("start", start)
+                        .param("end", end)
+                        .param("unique", "false")
+                        .accept(MediaType.APPLICATION_JSON)
+                ).andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("Start can't be later than the end.")));
     }
 }
